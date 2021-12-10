@@ -1,4 +1,4 @@
-module github.com/flipped-aurora/gin-vue-admin/server
+module RemindMe
 
 go 1.16
 
@@ -18,8 +18,11 @@ require (
 	github.com/gookit/color v1.3.1
 	github.com/jordan-wright/email v0.0.0-20200824153738-3f5bafa1cd84
 	github.com/lestrrat-go/file-rotatelogs v2.3.0+incompatible
-	github.com/medivhzhan/weapp/v3 v3.6.2
+	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/medivhzhan/weapp/v2 v2.4.2
+	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/mojocn/base64Captcha v1.3.1
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/qiniu/api.v7/v7 v7.4.1
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/satori/go.uuid v1.2.0

@@ -2,8 +2,8 @@
 package request
 
 import (
-	"github.com/flipped-aurora/gin-vue-admin/server/model/autocode"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"RemindMe/model/autocode"
+	"RemindMe/model/common/request"
 )
 
 // 如果含有time.Time 请自行import time包

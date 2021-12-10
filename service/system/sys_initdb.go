@@ -7,13 +7,13 @@ import (
 
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/flipped-aurora/gin-vue-admin/server/config"
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/example"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
-	"github.com/flipped-aurora/gin-vue-admin/server/source"
-	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"RemindMe/config"
+	"RemindMe/global"
+	"RemindMe/model/example"
+	"RemindMe/model/system"
+	"RemindMe/model/system/request"
+	"RemindMe/source"
+	"RemindMe/utils"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"

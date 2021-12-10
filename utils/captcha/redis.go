@@ -2,7 +2,7 @@ package captcha
 
 import (
 	"context"
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"RemindMe/global"
 	"github.com/mojocn/base64Captcha"
 	"go.uber.org/zap"
 	"time"

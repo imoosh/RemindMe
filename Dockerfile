@@ -1,6 +1,6 @@
 FROM golang:alpine as builder
 
-WORKDIR /go/src/github.com/flipped-aurora/gin-vue-admin/server
+WORKDIR /go/src/RemindMe
 COPY . .
 
 RUN go env -w GO111MODULE=on
@@ -13,9 +13,9 @@ RUN go build -o server .
 FROM alpine:latest
 LABEL MAINTAINER="SliverHorn@sliver_horn@qq.com"
 
-WORKDIR /go/src/github.com/flipped-aurora/gin-vue-admin/server
+WORKDIR /go/src/RemindMe
 
-COPY --from=0 /go/src/github.com/flipped-aurora/gin-vue-admin/server ./
+COPY --from=0 /go/src/RemindMe ./
 
 EXPOSE 8888
 

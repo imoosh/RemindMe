@@ -1,15 +1,15 @@
 package middleware
 
 import (
-	"github.com/flipped-aurora/gin-vue-admin/server/plugin/email/utils"
+	"RemindMe/plugin/email/utils"
 	"io/ioutil"
 	"strconv"
 	"time"
 
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
-	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"RemindMe/global"
+	"RemindMe/model/system"
+	"RemindMe/model/system/request"
+	"RemindMe/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )

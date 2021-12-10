@@ -6,10 +6,10 @@ import (
 	"mime/multipart"
 	"strconv"
 
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
-	exampleRes "github.com/flipped-aurora/gin-vue-admin/server/model/example/response"
-	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"RemindMe/global"
+	"RemindMe/model/common/response"
+	exampleRes "RemindMe/model/example/response"
+	"RemindMe/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )

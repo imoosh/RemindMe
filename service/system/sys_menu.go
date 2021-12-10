@@ -4,9 +4,9 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
+	"RemindMe/global"
+	"RemindMe/model/common/request"
+	"RemindMe/model/system"
 	"gorm.io/gorm"
 )
 

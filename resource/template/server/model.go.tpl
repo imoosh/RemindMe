@@ -2,7 +2,7 @@
 package autocode
 
 import (
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"RemindMe/global"
 )
 
 // {{.StructName}} 结构体

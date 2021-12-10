@@ -1,10 +1,10 @@
 package autocode
 
 import (
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/autocode"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
-    autoCodeReq "github.com/flipped-aurora/gin-vue-admin/server/model/autocode/request"
+	"RemindMe/global"
+	"RemindMe/model/autocode"
+	"RemindMe/model/common/request"
+    autoCodeReq "RemindMe/model/autocode/request"
 )
 
 type {{.StructName}}Service struct {

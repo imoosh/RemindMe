@@ -1,4 +1,4 @@
-# github.com/flipped-aurora/gin-vue-admin/server Global Configuration
+# RemindMe Global Configuration
 
 # jwt configuration
 jwt:
@@ -10,7 +10,7 @@ jwt:
 zap:
   level: 'info'
   format: 'console'
-  prefix: '[github.com/flipped-aurora/gin-vue-admin/server]'
+  prefix: '[RemindMe]'
   director: 'log'
   link-name: 'latest_log'
   show-line: true
@@ -110,7 +110,7 @@ tencent-cos:
   secret-id: 'xxxxxxxx'
   secret-key: 'xxxxxxxx'
   base-url: 'https://gin.vue.admin'
-  path-prefix: 'github.com/flipped-aurora/gin-vue-admin/server'
+  path-prefix: 'RemindMe'
 
 # excel configuration
 excel:

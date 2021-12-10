@@ -3,7 +3,7 @@ package upload
 import (
 	"mime/multipart"
 
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"RemindMe/global"
 )
 
 //@author: [ccfish86](https://github.com/ccfish86)

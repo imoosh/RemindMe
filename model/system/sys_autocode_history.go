@@ -1,6 +1,6 @@
 package system
 
-import "github.com/flipped-aurora/gin-vue-admin/server/global"
+import "RemindMe/global"
 
 // 自动迁移代码记录,用于回滚,重放使用
 

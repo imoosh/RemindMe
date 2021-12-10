@@ -1,0 +1,42 @@
+[RemindMe]2021/12/07 - 03:26:49.835	[34minfo[0m	register table success
+[RemindMe]2021/12/07 - 03:26:49.842	[34minfo[0m	use middleware logger
+[RemindMe]2021/12/07 - 03:26:49.842	[34minfo[0m	use middleware cors
+[RemindMe]2021/12/07 - 03:26:49.842	[34minfo[0m	register swagger handler
+[RemindMe]2021/12/07 - 03:26:49.842	[34minfo[0m	router register success
+[RemindMe]2021/12/07 - 03:26:49.842	[34minfo[0m	server run success on 	{"address": ":8888"}
+[RemindMe]2021/12/07 - 03:26:49.843	[31merror[0m	/Users/wayne/go/src/RemindMe/core/server.go:47	accept tcp [::]:8888: use of closed network connection
+[RemindMe]2021/12/07 - 17:45:37.402	[34minfo[0m	register table success
+[RemindMe]2021/12/07 - 17:45:37.405	[34minfo[0m	use middleware logger
+[RemindMe]2021/12/07 - 17:45:37.405	[34minfo[0m	use middleware cors
+[RemindMe]2021/12/07 - 17:45:37.406	[34minfo[0m	register swagger handler
+[RemindMe]2021/12/07 - 17:46:14.718	[34minfo[0m	register table success
+[RemindMe]2021/12/07 - 17:46:14.720	[34minfo[0m	use middleware logger
+[RemindMe]2021/12/07 - 17:46:14.720	[34minfo[0m	use middleware cors
+[RemindMe]2021/12/07 - 17:46:14.721	[34minfo[0m	register swagger handler
+[RemindMe]2021/12/07 - 17:46:14.723	[34minfo[0m	router register success
+[RemindMe]2021/12/07 - 17:46:14.723	[34minfo[0m	server run success on 	{"address": ":8888"}
+[RemindMe]2021/12/07 - 17:46:14.723	[31merror[0m	net.Listen error: listen tcp :8888: bind: address already in use
+[RemindMe]2021/12/07 - 17:49:32.628	[34minfo[0m	register table success
+[RemindMe]2021/12/07 - 17:49:32.629	[34minfo[0m	use middleware logger
+[RemindMe]2021/12/07 - 17:49:32.629	[34minfo[0m	use middleware cors
+[RemindMe]2021/12/07 - 17:49:32.629	[34minfo[0m	register swagger handler
+[RemindMe]2021/12/07 - 17:49:32.631	[34minfo[0m	router register success
+[RemindMe]2021/12/07 - 17:49:32.631	[34minfo[0m	server run success on 	{"address": ":8888"}
+[RemindMe]2021/12/07 - 17:54:39.255	[31merror[0m	accept tcp [::]:8888: use of closed network connection
+[RemindMe]2021/12/07 - 17:54:46.320	[34minfo[0m	register table success
+[RemindMe]2021/12/07 - 17:54:46.321	[34minfo[0m	use middleware logger
+[RemindMe]2021/12/07 - 17:54:46.322	[34minfo[0m	use middleware cors
+[RemindMe]2021/12/07 - 17:54:46.322	[34minfo[0m	register swagger handler
+[RemindMe]2021/12/07 - 17:54:46.324	[34minfo[0m	router register success
+[RemindMe]2021/12/07 - 17:54:46.324	[34minfo[0m	server run success on 	{"address": ":8888"}
+[RemindMe]2021/12/07 - 17:57:16.632	[31merror[0m	create operation record error:	{"err": "Error 1406: Data too long for column 'agent' at row 1"}
+[RemindMe]2021/12/07 - 17:57:39.894	[31merror[0m	create operation record error:	{"err": "Error 1406: Data too long for column 'agent' at row 1"}
+[RemindMe]2021/12/07 - 17:57:40.584	[31merror[0m	create operation record error:	{"err": "Error 1406: Data too long for column 'agent' at row 1"}
+[RemindMe]2021/12/07 - 17:58:50.633	[31merror[0m	create operation record error:	{"err": "Error 1406: Data too long for column 'agent' at row 1"}
+[RemindMe]2021/12/07 - 17:58:51.120	[31merror[0m	create operation record error:	{"err": "Error 1406: Data too long for column 'agent' at row 1"}
+[RemindMe]2021/12/07 - 18:01:14.651	[31merror[0m	create operation record error:	{"err": "Error 1406: Data too long for column 'agent' at row 1"}
+[RemindMe]2021/12/07 - 18:05:14.813	[31merror[0m	create operation record error:	{"err": "Error 1406: Data too long for column 'agent' at row 1"}
+[RemindMe]2021/12/07 - 18:05:46.758	[31merror[0m	create operation record error:	{"err": "Error 1406: Data too long for column 'agent' at row 1"}
+[RemindMe]2021/12/07 - 18:06:51.243	[31merror[0m	create operation record error:	{"err": "Error 1406: Data too long for column 'agent' at row 1"}
+[RemindMe]2021/12/07 - 18:07:33.522	[31merror[0m	create operation record error:	{"err": "Error 1406: Data too long for column 'agent' at row 1"}
+[RemindMe]2021/12/07 - 18:08:04.066	[31merror[0m	create operation record error:	{"err": "Error 1406: Data too long for column 'agent' at row 1"}

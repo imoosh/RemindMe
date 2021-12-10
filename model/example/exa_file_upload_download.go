@@ -1,7 +1,7 @@
 package example
 
 import (
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"RemindMe/global"
 )
 
 type ExaFileUploadAndDownload struct {

@@ -8,7 +8,7 @@ import (
 	"path"
 	"time"
 
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"RemindMe/global"
 	zaprotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap/zapcore"
 )

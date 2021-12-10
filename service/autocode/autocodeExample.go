@@ -1,9 +1,9 @@
 package autocode
 
 import (
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/autocode"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/autocode/request"
+	"RemindMe/global"
+	"RemindMe/model/autocode"
+	"RemindMe/model/autocode/request"
 )
 
 type AutoCodeExampleService struct {

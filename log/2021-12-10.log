@@ -1,0 +1,13 @@
+[RemindMe]2021/12/10 - 10:25:55.554	[31merror[0m	accept tcp [::]:8000: use of closed network connection
+[RemindMe]2021/12/10 - 10:26:05.962	[34minfo[0m	register table success
+[RemindMe]2021/12/10 - 10:26:05.962	[34minfo[0m	redis connect ping response:	{"pong": "PONG"}
+[RemindMe]2021/12/10 - 10:26:05.963	[34minfo[0m	use middleware logger
+[RemindMe]2021/12/10 - 10:26:05.963	[34minfo[0m	use middleware cors
+[RemindMe]2021/12/10 - 10:26:05.963	[34minfo[0m	register swagger handler
+[RemindMe]2021/12/10 - 10:26:05.963	[34minfo[0m	router register success
+[RemindMe]2021/12/10 - 10:26:12.918	[31merror[0m	数据解密失败!	{"err": "failed to validate signature"}
+[RemindMe]2021/12/10 - 18:11:36.424	[31merror[0m	数据解密失败!	{"err": "failed to validate signature"}
+[RemindMe]2021/12/10 - 18:11:40.046	[31merror[0m	数据解密失败!	{"err": "failed to validate signature"}
+[RemindMe]2021/12/10 - 18:14:32.515	[31merror[0m	数据解密失败!	{"err": "failed to validate signature"}
+[RemindMe]2021/12/10 - 18:14:34.833	[31merror[0m	数据解密失败!	{"err": "failed to validate signature"}
+[RemindMe]2021/12/10 - 18:16:06.413	[31merror[0m	accept tcp [::]:8000: use of closed network connection

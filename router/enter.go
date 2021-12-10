@@ -1,15 +1,17 @@
 package router
 
 import (
-	"github.com/flipped-aurora/gin-vue-admin/server/router/autocode"
-	"github.com/flipped-aurora/gin-vue-admin/server/router/example"
-	"github.com/flipped-aurora/gin-vue-admin/server/router/system"
+    "RemindMe/router/autocode"
+    "RemindMe/router/example"
+    "RemindMe/router/system"
+    "RemindMe/router/wxmp"
 )
 
 type RouterGroup struct {
-	System   system.RouterGroup
-	Example  example.RouterGroup
-	Autocode autocode.RouterGroup
+    System   system.RouterGroup
+    Example  example.RouterGroup
+    Autocode autocode.RouterGroup
+    Wxmp     wxmp.RouterGroup
 }
 
 var RouterGroupApp = new(RouterGroup)

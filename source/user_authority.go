@@ -1,8 +1,8 @@
 package source
 
 import (
-	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
+	"RemindMe/global"
+	"RemindMe/model/system"
 	"github.com/gookit/color"
 	"gorm.io/gorm"
 )
