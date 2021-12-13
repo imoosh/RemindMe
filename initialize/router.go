@@ -118,6 +118,7 @@ func WxmpRouters() *gin.Engine {
 		// 小程序部分
 		wxmpRouter.InitUserRouter(PublicGroup)
 		wxmpRouter.InitCommonRouter(PublicGroup)
+		wxmpRouter.InitActivityRouter(PublicGroup)
 	}
 
 	PrivateGroup := Router.Group("")

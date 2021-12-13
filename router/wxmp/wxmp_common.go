@@ -9,7 +9,7 @@ import (
 type CommonRouter struct {
 }
 
-func (s *UserRouter) InitCommonRouter(Router *gin.RouterGroup) {
+func (s *CommonRouter) InitCommonRouter(Router *gin.RouterGroup) {
     userRouter := Router.Group("api/v1/index/").Use(middleware.OperationRecord())
     var userApi = v1.ApiGroupApp.WxmpApiGroup.CommonApi
     {

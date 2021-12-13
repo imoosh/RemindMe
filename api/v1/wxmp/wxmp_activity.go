@@ -2,7 +2,9 @@ package wxmp
 
 import (
 	"RemindMe/model/common/response"
+	wxmpReq "RemindMe/model/wxmp/request"
 	wxmpRes "RemindMe/model/wxmp/response"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +20,10 @@ func (api *ActivityApi) GetActivityList(c *gin.Context) {
 }
 
 func (api *ActivityApi) CreateActivity(c *gin.Context) {
-
+	var req wxmpReq.ActivityCreateRequest
+	_ = c.ShouldBindJSON(&req)
+	fmt.Println(req)
+	response.OkWithData(nil, c)
 }
 
 func (api *ActivityApi) GetActivityDetail(c *gin.Context) {
