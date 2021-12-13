@@ -223,3 +223,27 @@ func (b *UserApi) tokenNext(c *gin.Context, user *weapp.UserInfo) (token string,
 
     return token, nil
 }
+
+// @Tags Base
+// @Summary 微信小程序手机号码授权
+// @Produce  application/json
+// @Param data body wxmpReq.Login true "用户名, 密码, 验证码"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
+// @Router /base/login [post]
+func (b *UserApi) WXPhoneNumberAuth(c *gin.Context) {
+    var req wxmpReq.WXPhoneNumberAuthRequest
+    _ = c.ShouldBindJSON(&req)
+
+    info, err := weapp.DecryptMobile(req.SessionKey, req.EncryptedData, req.IV)
+    if err != nil {
+        global.GVA_LOG.Error("数据解密失败!", zap.Any("err", err))
+        response.Fail(c)
+        return
+    }
+    fmt.Println(info)
+
+    var res = wxmpRes.WXPhoneNumberAuthResponse{
+        Phone: info.PhoneNumber,
+    }
+    response.OkWithDetailed(&res, "登录成功", c)
+}

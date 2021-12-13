@@ -31,6 +31,7 @@ type Login struct {
     UserInfo ResUserInfo `json:"userInfo"`
 }
 
+
 // 请求session_key
 type GetWxMiniProgramSessionKeyRequest struct {
     AutoLogin bool   `json:"autoLogin"`
@@ -57,4 +58,12 @@ type UserDataRequest struct {
     } `json:"group"`
     Verification string `json:"verification"`
     Mobile       string `json:"mobile"`
+}
+
+// 微信小程序手机号码
+type WXPhoneNumberAuthRequest struct {
+    EncryptedData string `json:"encryptedData"`
+    Event         string `json:"event"`
+    IV            string `json:"iv"`
+    SessionKey    string `json:"session_key"`
 }

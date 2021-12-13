@@ -16,6 +16,7 @@ func (s *UserRouter) InitUserRouter(Router *gin.RouterGroup) {
         userRouter.GET("", userApi.User)                                                  // 用户信息
         userRouter.POST("getWxMiniProgramSessionKey", userApi.GetWxMiniProgramSessionKey) // 获取用户session_key
         userRouter.POST("wxMiniProgramOauth", userApi.WXMiniProgramOauth)                 // 微信小程序登陆
+        userRouter.POST("wxPhoneNumberAuth", userApi.WXPhoneNumberAuth)                   //手机号码解密
         userRouter.GET("userData", userApi.UserData)                                      // 用户其他信息
         userRouter.POST("accountLogin", userApi.AccountLogin)                             // 用户注册账号
         userRouter.POST("logout", userApi.Logout)                                         // 退出登录
