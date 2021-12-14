@@ -2,7 +2,7 @@ package wxmp
 
 type RouterGroup struct {
     UserRouter
-    CommonRouter
+    BaseRouter
     ActivityRouter
 }
 

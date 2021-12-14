@@ -6,6 +6,7 @@ import (
 
 // Custom claims structure
 type CustomClaims struct {
+    ID         uint   `json:"id"`
     OpenID     string `json:"openId"`
     Nickname   string `json:"nickName"`
     Gender     int    `json:"gender"`

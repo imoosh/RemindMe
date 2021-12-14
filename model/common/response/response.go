@@ -16,6 +16,7 @@ type Response struct {
 const (
     ERROR   = 0
     SUCCESS = 1
+    TOKEN_EXPIRE = 401
 )
 
 func Result(code int, data interface{}, msg string, c *gin.Context) {
@@ -54,4 +55,8 @@ func FailWithMessage(message string, c *gin.Context) {
 
 func FailWithDetailed(data interface{}, message string, c *gin.Context) {
     Result(ERROR, data, message, c)
+}
+
+func TokenExpired(c *gin.Context)  {
+    Result(TOKEN_EXPIRE, map[string]interface{}{}, "授权已过期", c)
 }

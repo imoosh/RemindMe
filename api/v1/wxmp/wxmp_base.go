@@ -6,7 +6,7 @@ import (
     "github.com/gin-gonic/gin"
 )
 
-type CommonApi struct {
+type BaseApi struct {
 }
 
 var (
@@ -44,9 +44,9 @@ var (
 // @Param data body systemReq.Login true "用户名, 密码, 验证码"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
 // @Router /base/login [post]
-func (b *CommonApi) IndexInit(c *gin.Context) {
+func (b *BaseApi) IndexInit(c *gin.Context) {
 
-    var res = wxmpRes.CommonInitResponse{
+    var res = wxmpRes.BaseInitResponse{
         ActivityPeriodicList: activityPeriodicList,
         ActivityRemindAtList: activityRemindAtList,
         ActivityPrivacyList:  ActivityPrivacyList,

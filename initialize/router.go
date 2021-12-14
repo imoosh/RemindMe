@@ -98,7 +98,7 @@ func WxmpRouters() *gin.Engine {
 	// Router.Use(middleware.LoadTls())  // 打开就能玩https了
 	global.GVA_LOG.Info("use middleware logger")
 	// 跨域
-	//Router.Use(middleware.Cors()) // 如需跨域可以打开
+	Router.Use(middleware.WxmpCors()) // 如需跨域可以打开
 	global.GVA_LOG.Info("use middleware cors")
 	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	global.GVA_LOG.Info("register swagger handler")
@@ -115,18 +115,14 @@ func WxmpRouters() *gin.Engine {
 		})
 	}
 	{
-		// 小程序部分
-		wxmpRouter.InitUserRouter(PublicGroup)
-		wxmpRouter.InitCommonRouter(PublicGroup)
-		wxmpRouter.InitActivityRouter(PublicGroup)
+		wxmpRouter.InitBaseRouter(PublicGroup)
 	}
 
 	PrivateGroup := Router.Group("")
-	PrivateGroup.Use(middleware.JWTWXMPAuth()).Use(middleware.CasbinHandler())
+	PrivateGroup.Use(middleware.JWTWXMPAuth())//.Use(middleware.CasbinHandler())
 	{
-		//wxmpRouter.InitApiRouter(PrivateGroup)                    // 注册功能api路由
-		//wxmpRouter.InitJwtRouter(PrivateGroup)                    // jwt相关路由
-		//wxmpRouter.InitUserRouter(PrivateGroup)                   // 注册用户路由
+		wxmpRouter.InitUserRouter(PrivateGroup)
+		wxmpRouter.InitActivityRouter(PrivateGroup)
 	}
 
 	InstallPlugin(PublicGroup, PrivateGroup) // 安装插件

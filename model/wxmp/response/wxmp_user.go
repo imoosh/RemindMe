@@ -3,6 +3,7 @@ package response
 // 请求session_key
 type GetWxMiniProgramSessionKeyResponse struct {
     SessionKey string `json:"session_key"`
+    OpenId     string `json:"openid"`
     Token      string `json:"token"`
 }
 
