@@ -1,10 +1,10 @@
 package system
 
 import (
-	"RemindMe/global"
+	"RemindMe/model"
 )
 
 type JwtBlacklist struct {
-	global.GVA_MODEL
+	models.Model
 	Jwt string `gorm:"type:text;comment:jwt"`
 }

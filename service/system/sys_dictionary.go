@@ -19,10 +19,10 @@ type DictionaryService struct {
 }
 
 func (dictionaryService *DictionaryService) CreateSysDictionary(sysDictionary system.SysDictionary) (err error) {
-	if (!errors.Is(global.GVA_DB.First(&system.SysDictionary{}, "type = ?", sysDictionary.Type).Error, gorm.ErrRecordNotFound)) {
+	if (!errors.Is(global.DB.First(&system.SysDictionary{}, "type = ?", sysDictionary.Type).Error, gorm.ErrRecordNotFound)) {
 		return errors.New("存在相同的type，不允许创建")
 	}
-	err = global.GVA_DB.Create(&sysDictionary).Error
+	err = global.DB.Create(&sysDictionary).Error
 	return err
 }
 
@@ -33,7 +33,7 @@ func (dictionaryService *DictionaryService) CreateSysDictionary(sysDictionary sy
 //@return: err error
 
 func (dictionaryService *DictionaryService) DeleteSysDictionary(sysDictionary system.SysDictionary) (err error) {
-	err = global.GVA_DB.Delete(&sysDictionary).Delete(&sysDictionary.SysDictionaryDetails).Error
+	err = global.DB.Delete(&sysDictionary).Delete(&sysDictionary.SysDictionaryDetails).Error
 	return err
 }
 
@@ -51,9 +51,9 @@ func (dictionaryService *DictionaryService) UpdateSysDictionary(sysDictionary *s
 		"Status": sysDictionary.Status,
 		"Desc":   sysDictionary.Desc,
 	}
-	db := global.GVA_DB.Where("id = ?", sysDictionary.ID).First(&dict)
+	db := global.DB.Where("id = ?", sysDictionary.ID).First(&dict)
 	if dict.Type != sysDictionary.Type {
-		if !errors.Is(global.GVA_DB.First(&system.SysDictionary{}, "type = ?", sysDictionary.Type).Error, gorm.ErrRecordNotFound) {
+		if !errors.Is(global.DB.First(&system.SysDictionary{}, "type = ?", sysDictionary.Type).Error, gorm.ErrRecordNotFound) {
 			return errors.New("存在相同的type，不允许创建")
 		}
 	}
@@ -68,7 +68,7 @@ func (dictionaryService *DictionaryService) UpdateSysDictionary(sysDictionary *s
 //@return: err error, sysDictionary model.SysDictionary
 
 func (dictionaryService *DictionaryService) GetSysDictionary(Type string, Id uint) (err error, sysDictionary system.SysDictionary) {
-	err = global.GVA_DB.Where("type = ? OR id = ?", Type, Id).Preload("SysDictionaryDetails").First(&sysDictionary).Error
+	err = global.DB.Where("type = ? OR id = ?", Type, Id).Preload("SysDictionaryDetails").First(&sysDictionary).Error
 	return
 }
 
@@ -83,7 +83,7 @@ func (dictionaryService *DictionaryService) GetSysDictionaryInfoList(info reques
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
-	db := global.GVA_DB.Model(&system.SysDictionary{})
+	db := global.DB.Model(&system.SysDictionary{})
 	var sysDictionarys []system.SysDictionary
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if info.Name != "" {

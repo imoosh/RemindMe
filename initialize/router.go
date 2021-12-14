@@ -26,14 +26,14 @@ func Routers() *gin.Engine {
 	//Router.Static("/static", "./dist/static")   // dist里面的静态资源
 	//Router.StaticFile("/", "./dist/index.html") // 前端网页入口页面
 
-	Router.StaticFS(global.GVA_CONFIG.Local.Path, http.Dir(global.GVA_CONFIG.Local.Path)) // 为用户头像和文件提供静态地址
+	Router.StaticFS(global.Config.Local.Path, http.Dir(global.Config.Local.Path)) // 为用户头像和文件提供静态地址
 	// Router.Use(middleware.LoadTls())  // 打开就能玩https了
-	global.GVA_LOG.Info("use middleware logger")
+	global.Log.Info("use middleware logger")
 	// 跨域
 	//Router.Use(middleware.Cors()) // 如需跨域可以打开
-	global.GVA_LOG.Info("use middleware cors")
+	global.Log.Info("use middleware cors")
 	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	global.GVA_LOG.Info("register swagger handler")
+	global.Log.Info("register swagger handler")
 	// 方便统一添加路由组前缀 多服务器上线使用
 
 	//获取路由组实例
@@ -78,7 +78,7 @@ func Routers() *gin.Engine {
 
 	InstallPlugin(PublicGroup, PrivateGroup) // 安装插件
 
-	global.GVA_LOG.Info("router register success")
+	global.Log.Info("router register success")
 	return Router
 }
 
@@ -94,14 +94,14 @@ func WxmpRouters() *gin.Engine {
 	//Router.Static("/static", "./dist/static")   // dist里面的静态资源
 	//Router.StaticFile("/", "./dist/index.html") // 前端网页入口页面
 
-	Router.StaticFS(global.GVA_CONFIG.Local.Path, http.Dir(global.GVA_CONFIG.Local.Path)) // 为用户头像和文件提供静态地址
+	Router.StaticFS(global.Config.Local.Path, http.Dir(global.Config.Local.Path)) // 为用户头像和文件提供静态地址
 	// Router.Use(middleware.LoadTls())  // 打开就能玩https了
-	global.GVA_LOG.Info("use middleware logger")
+	global.Log.Info("use middleware logger")
 	// 跨域
 	Router.Use(middleware.WxmpCors()) // 如需跨域可以打开
-	global.GVA_LOG.Info("use middleware cors")
+	global.Log.Info("use middleware cors")
 	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	global.GVA_LOG.Info("register swagger handler")
+	global.Log.Info("register swagger handler")
 	// 方便统一添加路由组前缀 多服务器上线使用
 
 	//获取路由组实例
@@ -127,6 +127,6 @@ func WxmpRouters() *gin.Engine {
 
 	InstallPlugin(PublicGroup, PrivateGroup) // 安装插件
 
-	global.GVA_LOG.Info("router register success")
+	global.Log.Info("router register success")
 	return Router
 }

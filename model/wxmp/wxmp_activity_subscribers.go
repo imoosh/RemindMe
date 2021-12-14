@@ -1,9 +1,11 @@
 package wxmp
 
-import "RemindMe/global"
+import (
+	"RemindMe/model"
+)
 
 type WxmpActivitySubscribers struct {
-    global.GVA_MODEL
+	models.Model
     ActivityId       int64  `json:"activity_id" gorm:"column:activity_id; comment:活动id; index: index_activity_id"`
     SubscriberUserId string `json:"subscriber_user_id" gorm:"column:subscriber_user_id; comment:订阅者用户id"`
 

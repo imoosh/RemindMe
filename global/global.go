@@ -16,14 +16,14 @@ import (
 )
 
 var (
-	GVA_DB     *gorm.DB
-	GVA_REDIS  *redis.Client
-	GVA_CONFIG config.Server
-	GVA_VP     *viper.Viper
-	//GVA_LOG    *oplogging.Logger
-	GVA_LOG                 *zap.Logger
-	GVA_Timer               timer.Timer = timer.NewTimerTask()
-	GVA_Concurrency_Control             = &singleflight.Group{}
+	DB     *gorm.DB
+	Redis  *redis.Client
+	Config config.Server
+	VP     *viper.Viper
+	//Log    *oplogging.Logger
+	Log                *zap.Logger
+	Timer              timer.Timer = timer.NewTimerTask()
+	ConcurrencyControl             = &singleflight.Group{}
 
 	BlackCache local_cache.Cache
 )

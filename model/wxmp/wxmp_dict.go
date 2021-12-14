@@ -1,9 +1,11 @@
 package wxmp
 
-import "RemindMe/global"
+import (
+	"RemindMe/model"
+)
 
 type WxmpDict struct {
-    global.GVA_MODEL
+	models.Model
     Type  string `json:"type" gorm:"column:type; type:varchar(64); comment:类型名"`
     Id    int    `json:"index" gorm:"column:index; comment:标签编号"`
     Label string `json:"label" gorm:"column:label; type:varchar(64); comment:标签名"`

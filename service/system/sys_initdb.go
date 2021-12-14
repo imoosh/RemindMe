@@ -30,8 +30,8 @@ type InitDBService struct {
 }
 
 func (initDBService *InitDBService) writeConfig(viper *viper.Viper, mysql config.Mysql) error {
-	global.GVA_CONFIG.Mysql = mysql
-	cs := utils.StructToMap(global.GVA_CONFIG)
+	global.Config.Mysql = mysql
+	cs := utils.StructToMap(global.Config)
 	for k, v := range cs {
 		viper.Set(k, v)
 	}
@@ -121,10 +121,10 @@ func (initDBService *InitDBService) InitDB(conf request.InitDB) error {
 		sqlDB, _ := db.DB()
 		sqlDB.SetMaxIdleConns(MysqlConfig.MaxIdleConns)
 		sqlDB.SetMaxOpenConns(MysqlConfig.MaxOpenConns)
-		global.GVA_DB = db
+		global.DB = db
 	}
 
-	err := global.GVA_DB.AutoMigrate(
+	err := global.DB.AutoMigrate(
 		system.SysUser{},
 		system.SysAuthority{},
 		system.SysApi{},
@@ -141,7 +141,7 @@ func (initDBService *InitDBService) InitDB(conf request.InitDB) error {
 		system.SysAutoCodeHistory{},
 	)
 	if err != nil {
-		global.GVA_DB = nil
+		global.DB = nil
 		return err
 	}
 	err = initDBService.initDB(
@@ -159,13 +159,13 @@ func (initDBService *InitDBService) InitDB(conf request.InitDB) error {
 		source.UserAuthority,
 	)
 	if err != nil {
-		global.GVA_DB = nil
+		global.DB = nil
 		return err
 	}
 
-	if err = initDBService.writeConfig(global.GVA_VP, MysqlConfig); err != nil {
+	if err = initDBService.writeConfig(global.VP, MysqlConfig); err != nil {
 		return err
 	}
-	global.GVA_CONFIG.AutoCode.Root, _ = filepath.Abs("..")
+	global.Config.AutoCode.Root, _ = filepath.Abs("..")
 	return nil
 }

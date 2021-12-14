@@ -17,7 +17,7 @@ type AutoCodeExampleService struct {
 
 func (autoCodeExampleService *AutoCodeExampleService) CreateAutoCodeExample(autoCodeExample autocode.AutoCodeExample) (err error) {
 
-	err = global.GVA_DB.Create(&autoCodeExample).Error
+	err = global.DB.Create(&autoCodeExample).Error
 	return err
 }
 
@@ -28,7 +28,7 @@ func (autoCodeExampleService *AutoCodeExampleService) CreateAutoCodeExample(auto
 //@return: err error
 
 func (autoCodeExampleService *AutoCodeExampleService) DeleteAutoCodeExample(autoCodeExample autocode.AutoCodeExample) (err error) {
-	err = global.GVA_DB.Delete(&autoCodeExample).Error
+	err = global.DB.Delete(&autoCodeExample).Error
 	return err
 }
 
@@ -39,7 +39,7 @@ func (autoCodeExampleService *AutoCodeExampleService) DeleteAutoCodeExample(auto
 //@return: err error
 
 func (autoCodeExampleService *AutoCodeExampleService) UpdateAutoCodeExample(autoCodeExample *autocode.AutoCodeExample) (err error) {
-	err = global.GVA_DB.Save(autoCodeExample).Error
+	err = global.DB.Save(autoCodeExample).Error
 	return err
 }
 
@@ -50,7 +50,7 @@ func (autoCodeExampleService *AutoCodeExampleService) UpdateAutoCodeExample(auto
 //@return: err error, autoCodeExample autocode.AutoCodeExample
 
 func (autoCodeExampleService *AutoCodeExampleService) GetAutoCodeExample(id uint) (err error, autoCodeExample autocode.AutoCodeExample) {
-	err = global.GVA_DB.Where("id = ?", id).First(&autoCodeExample).Error
+	err = global.DB.Where("id = ?", id).First(&autoCodeExample).Error
 	return
 }
 
@@ -64,7 +64,7 @@ func (autoCodeExampleService *AutoCodeExampleService) GetAutoCodeExampleInfoList
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
-	db := global.GVA_DB.Model(&autocode.AutoCodeExample{})
+	db := global.DB.Model(&autocode.AutoCodeExample{})
 	var autoCodeExamples []autocode.AutoCodeExample
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if info.AutoCodeExampleField != "" {

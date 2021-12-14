@@ -1,7 +1,5 @@
 package request
 
-import "time"
-
 // 活动用户信息
 type ActivityUser struct {
 	Id     int64  `json:"id"`     // 用户id
@@ -11,11 +9,11 @@ type ActivityUser struct {
 
 // 活动时间
 type ActivityTime struct {
-	Solar    time.Time `json:"solar"`    // 日历时间
-	IsLunar  bool      `json:"isLunar"`  // 是否为农历
-	Lunar    string    `json:"lunar"`    // 农历时间
-	Periodic int       `json:"periodic"` // 周期间隔时间，0/1/7/30/365及355(农历每年)
-	NWeek    int       `json:"nWeek"`    // 周期几，1-7
+	Solar    string `json:"solar"`    // 日历时间
+	IsLunar  bool   `json:"isLunar"`  // 是否为农历
+	Lunar    string `json:"lunar"`    // 农历时间
+	Periodic int    `json:"periodic"` // 周期间隔时间，0/1/7/30/365及355(农历每年)
+	NWeek    int    `json:"nWeek"`    // 周期几，1-7
 }
 
 // 活动地址

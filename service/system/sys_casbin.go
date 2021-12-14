@@ -52,7 +52,7 @@ func (casbinService *CasbinService) UpdateCasbin(authorityId string, casbinInfos
 //@return: error
 
 func (casbinService *CasbinService) UpdateCasbinApi(oldPath string, newPath string, oldMethod string, newMethod string) error {
-	err := global.GVA_DB.Table("casbin_rule").Model(&system.CasbinModel{}).Where("v1 = ? AND v2 = ?", oldPath, oldMethod).Updates(map[string]interface{}{
+	err := global.DB.Table("casbin_rule").Model(&system.CasbinModel{}).Where("v1 = ? AND v2 = ?", oldPath, oldMethod).Updates(map[string]interface{}{
 		"v1": newPath,
 		"v2": newMethod,
 	}).Error
@@ -102,8 +102,8 @@ var (
 
 func (casbinService *CasbinService) Casbin() *casbin.SyncedEnforcer {
 	once.Do(func() {
-		a, _ := gormadapter.NewAdapterByDB(global.GVA_DB)
-		syncedEnforcer, _ = casbin.NewSyncedEnforcer(global.GVA_CONFIG.Casbin.ModelPath, a)
+		a, _ := gormadapter.NewAdapterByDB(global.DB)
+		syncedEnforcer, _ = casbin.NewSyncedEnforcer(global.Config.Casbin.ModelPath, a)
 		syncedEnforcer.AddFunction("ParamsMatch", casbinService.ParamsMatchFunc)
 	})
 	_ = syncedEnforcer.LoadPolicy()

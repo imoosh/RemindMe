@@ -53,7 +53,7 @@ func (b *UserApi) AccountLogin(c *gin.Context) {
 func (b *UserApi) UserInfo(c *gin.Context) {
     info := utils.GetWxmpUserInfo(c)
     if info == nil {
-        global.GVA_LOG.Error("获取用户信息失败")
+        global.Log.Error("获取用户信息失败")
         response.FailWithMessage("获取用户信息失败", c)
         return
     }
@@ -112,7 +112,7 @@ func (b *UserApi) WXMiniProgramOauth(c *gin.Context) {
 
     info, err := weapp.DecryptUserInfo(req.SessionKey, req.RawData, req.EncryptedData, req.Signature, req.IV)
     if err != nil {
-        global.GVA_LOG.Error("数据解密失败!", zap.Any("err", err))
+        global.Log.Error("数据解密失败!", zap.Any("err", err))
         response.FailWithMessage(err.Error(), c)
         return
     }
@@ -120,7 +120,7 @@ func (b *UserApi) WXMiniProgramOauth(c *gin.Context) {
     // 获取openid
     openid := c.Request.Header.Get("openid")
     if openid == "" {
-        global.GVA_LOG.Error("openid不存在")
+        global.Log.Error("openid不存在")
         response.FailWithMessage("登陆失败", c)
     }
 
@@ -129,7 +129,7 @@ func (b *UserApi) WXMiniProgramOauth(c *gin.Context) {
     userService.UpdateBasicInfo(openid, &u)
     user, err := userService.GetUserByOpenId(openid)
     if err != nil {
-        global.GVA_LOG.Error("查询用户信息失败", zap.Any("err", err))
+        global.Log.Error("查询用户信息失败", zap.Any("err", err))
         return
     }
 
@@ -137,7 +137,7 @@ func (b *UserApi) WXMiniProgramOauth(c *gin.Context) {
     info.UnionID = user.UnionID
     token, err := b.tokenNext(c, user.ID, info)
     if err != nil {
-        global.GVA_LOG.Error("获取token失败!", zap.Any("err", err))
+        global.Log.Error("获取token失败!", zap.Any("err", err))
         response.FailWithMessage(err.Error(), c)
         return
     }
@@ -158,7 +158,7 @@ func (b *UserApi) UserData(c *gin.Context) {
 
     info := utils.GetWxmpUserInfo(c)
     if info == nil {
-        global.GVA_LOG.Error("获取用户信息失败")
+        global.Log.Error("获取用户信息失败")
         response.Fail(c)
         return
     }
@@ -172,7 +172,7 @@ func (b *UserApi) UserData(c *gin.Context) {
 
 // 登录以后签发jwt
 func (b *UserApi) tokenNext(c *gin.Context, id uint, user *weapp.UserInfo) (token string, err error) {
-    j := &utils.WxmpJWT{SigningKey: []byte(global.GVA_CONFIG.JWT.SigningKey)} // 唯一签名
+    j := &utils.WxmpJWT{SigningKey: []byte(global.Config.JWT.SigningKey)} // 唯一签名
     claims := wxmpReq.CustomClaims{
         ID:         id,
         OpenID:     user.OpenID,
@@ -187,14 +187,14 @@ func (b *UserApi) tokenNext(c *gin.Context, id uint, user *weapp.UserInfo) (toke
         BufferTime: 3600, // 缓冲时间1天 缓冲时间内会获得新的token刷新令牌 此时一个用户会存在两个有效令牌 但是前端只留一个 另一个会丢失
         StandardClaims: jwt.StandardClaims{
             NotBefore: time.Now().Unix() - 1000, // 签名生效时间
-            //ExpiresAt: time.Now().Unix() + global.GVA_CONFIG.JWT.ExpiresTime, // 过期时间 7天  配置文件
+            //ExpiresAt: time.Now().Unix() + global.Config.JWT.ExpiresTime, // 过期时间 7天  配置文件
             ExpiresAt: time.Now().Unix() + 30*24*3600, // 过期时间 7天  配置文件
             Issuer:    "7gcat",                        // 签名的发行者
         },
     }
     token, err = j.CreateToken(claims)
     if err != nil {
-        global.GVA_LOG.Error("获取token失败!", zap.Any("err", err))
+        global.Log.Error("获取token失败!", zap.Any("err", err))
         response.FailWithMessage("获取token失败", c)
         return "", err
     }
@@ -202,18 +202,18 @@ func (b *UserApi) tokenNext(c *gin.Context, id uint, user *weapp.UserInfo) (toke
     var userbs []byte
     userbs, err = json.Marshal(user)
     if err != nil {
-        global.GVA_LOG.Error("json.Marshal失败!", zap.Any("err", err))
+        global.Log.Error("json.Marshal失败!", zap.Any("err", err))
         return
     }
     userStr := string(userbs)
 
     if err, _ = jwtService.GetRedisJWT(token); err == redis.Nil {
         if err = jwtService.SetRedisJWT(userStr, token); err != nil {
-            global.GVA_LOG.Error("设置登录状态失败!", zap.Any("err", err))
+            global.Log.Error("设置登录状态失败!", zap.Any("err", err))
             return
         }
     } else if err != nil {
-        global.GVA_LOG.Error("设置登录状态失败!", zap.Any("err", err))
+        global.Log.Error("设置登录状态失败!", zap.Any("err", err))
         return
     } else {
         if err = jwtService.SetRedisJWT(token, userStr); err != nil {
@@ -234,7 +234,7 @@ func (b *UserApi) WXPhoneNumberAuth(c *gin.Context) {
 
     info := utils.GetWxmpUserInfo(c)
     if info == nil {
-        global.GVA_LOG.Error("获取用户信息失败")
+        global.Log.Error("获取用户信息失败")
         response.Fail(c)
         return
     }
@@ -244,7 +244,7 @@ func (b *UserApi) WXPhoneNumberAuth(c *gin.Context) {
 
     mobile, err := weapp.DecryptMobile(req.SessionKey, req.EncryptedData, req.IV)
     if err != nil {
-        global.GVA_LOG.Error("数据解密失败!", zap.Any("err", err))
+        global.Log.Error("数据解密失败!", zap.Any("err", err))
         response.Fail(c)
         return
     }

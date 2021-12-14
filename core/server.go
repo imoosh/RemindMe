@@ -12,13 +12,13 @@ type server interface {
 }
 
 func RunWindowsServer() {
-    if global.GVA_CONFIG.System.UseMultipoint {
+    if global.Config.System.UseMultipoint {
         // 初始化redis服务
         initialize.Redis()
     }
 
     // 从db加载jwt数据
-    if global.GVA_DB != nil {
+    if global.DB != nil {
         system.LoadAll()
     }
 
@@ -27,12 +27,12 @@ func RunWindowsServer() {
 
     //pcRouter.Static("/form-generator", "./resource/page")
 
-    //pcAddr := fmt.Sprintf(":%d", global.GVA_CONFIG.System.Addr)
+    //pcAddr := fmt.Sprintf(":%d", global.Config.System.Addr)
     //pcServe := initServer(pcAddr, pcRouter)
 
     wxmpAddr := fmt.Sprintf(":8000")
     wxmpSeve := initServer(wxmpAddr, wxmpRouter)
 
-    //go global.GVA_LOG.Error(pcServe.ListenAndServe().Error())
-    global.GVA_LOG.Error(wxmpSeve.ListenAndServe().Error())
+    //go global.Log.Error(pcServe.ListenAndServe().Error())
+    global.Log.Error(wxmpSeve.ListenAndServe().Error())
 }

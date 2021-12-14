@@ -32,32 +32,32 @@ func Init() {
 	}
 	injectionPaths = []injectionMeta{
 		{
-			path: filepath.Join(global.GVA_CONFIG.AutoCode.Root,
-				global.GVA_CONFIG.AutoCode.Server, global.GVA_CONFIG.AutoCode.SInitialize, "gorm.go"),
+			path: filepath.Join(global.Config.AutoCode.Root,
+				global.Config.AutoCode.Server, global.Config.AutoCode.SInitialize, "gorm.go"),
 			funcName:    "MysqlTables",
 			structNameF: "autocode.%s{},",
 		},
 		{
-			path: filepath.Join(global.GVA_CONFIG.AutoCode.Root,
-				global.GVA_CONFIG.AutoCode.Server, global.GVA_CONFIG.AutoCode.SInitialize, "router.go"),
+			path: filepath.Join(global.Config.AutoCode.Root,
+				global.Config.AutoCode.Server, global.Config.AutoCode.SInitialize, "router.go"),
 			funcName:    "Routers",
 			structNameF: "autocodeRouter.Init%sRouter(PrivateGroup)",
 		},
 		{
-			path: filepath.Join(global.GVA_CONFIG.AutoCode.Root,
-				global.GVA_CONFIG.AutoCode.Server, global.GVA_CONFIG.AutoCode.SApi, "enter.go"),
+			path: filepath.Join(global.Config.AutoCode.Root,
+				global.Config.AutoCode.Server, global.Config.AutoCode.SApi, "enter.go"),
 			funcName:    "ApiGroup",
 			structNameF: "%sApi",
 		},
 		{
-			path: filepath.Join(global.GVA_CONFIG.AutoCode.Root,
-				global.GVA_CONFIG.AutoCode.Server, global.GVA_CONFIG.AutoCode.SRouter, "enter.go"),
+			path: filepath.Join(global.Config.AutoCode.Root,
+				global.Config.AutoCode.Server, global.Config.AutoCode.SRouter, "enter.go"),
 			funcName:    "RouterGroup",
 			structNameF: "%sRouter",
 		},
 		{
-			path: filepath.Join(global.GVA_CONFIG.AutoCode.Root,
-				global.GVA_CONFIG.AutoCode.Server, global.GVA_CONFIG.AutoCode.SService, "enter.go"),
+			path: filepath.Join(global.Config.AutoCode.Root,
+				global.Config.AutoCode.Server, global.Config.AutoCode.SService, "enter.go"),
 			funcName:    "ServiceGroup",
 			structNameF: "%sService",
 		},
@@ -214,7 +214,7 @@ func (autoCodeService *AutoCodeService) CreateTemp(autoCode system.AutoCodeStruc
 			}
 		}
 
-		if global.GVA_CONFIG.AutoCode.TransferRestart {
+		if global.Config.AutoCode.TransferRestart {
 			go func() {
 				_ = utils.Reload()
 			}()
@@ -287,7 +287,7 @@ func (autoCodeService *AutoCodeService) GetAllTplFile(pathName string, fileList 
 //@return: err error, TableNames []request.TableReq
 
 func (autoCodeService *AutoCodeService) GetTables(dbName string) (err error, TableNames []request.TableReq) {
-	err = global.GVA_DB.Raw("select table_name as table_name from information_schema.tables where table_schema = ?", dbName).Scan(&TableNames).Error
+	err = global.DB.Raw("select table_name as table_name from information_schema.tables where table_schema = ?", dbName).Scan(&TableNames).Error
 	return err, TableNames
 }
 
@@ -297,7 +297,7 @@ func (autoCodeService *AutoCodeService) GetTables(dbName string) (err error, Tab
 //@return: err error, DBNames []request.DBReq
 
 func (autoCodeService *AutoCodeService) GetDB() (err error, DBNames []request.DBReq) {
-	err = global.GVA_DB.Raw("SELECT SCHEMA_NAME AS `database` FROM INFORMATION_SCHEMA.SCHEMATA;").Scan(&DBNames).Error
+	err = global.DB.Raw("SELECT SCHEMA_NAME AS `database` FROM INFORMATION_SCHEMA.SCHEMATA;").Scan(&DBNames).Error
 	return err, DBNames
 }
 
@@ -308,12 +308,12 @@ func (autoCodeService *AutoCodeService) GetDB() (err error, DBNames []request.DB
 //@return: err error, Columns []request.ColumnReq
 
 func (autoCodeService *AutoCodeService) GetColumn(tableName string, dbName string) (err error, Columns []request.ColumnReq) {
-	err = global.GVA_DB.Raw("SELECT COLUMN_NAME column_name,DATA_TYPE data_type,CASE DATA_TYPE WHEN 'longtext' THEN c.CHARACTER_MAXIMUM_LENGTH WHEN 'varchar' THEN c.CHARACTER_MAXIMUM_LENGTH WHEN 'double' THEN CONCAT_WS( ',', c.NUMERIC_PRECISION, c.NUMERIC_SCALE ) WHEN 'decimal' THEN CONCAT_WS( ',', c.NUMERIC_PRECISION, c.NUMERIC_SCALE ) WHEN 'int' THEN c.NUMERIC_PRECISION WHEN 'bigint' THEN c.NUMERIC_PRECISION ELSE '' END AS data_type_long,COLUMN_COMMENT column_comment FROM INFORMATION_SCHEMA.COLUMNS c WHERE table_name = ? AND table_schema = ?", tableName, dbName).Scan(&Columns).Error
+	err = global.DB.Raw("SELECT COLUMN_NAME column_name,DATA_TYPE data_type,CASE DATA_TYPE WHEN 'longtext' THEN c.CHARACTER_MAXIMUM_LENGTH WHEN 'varchar' THEN c.CHARACTER_MAXIMUM_LENGTH WHEN 'double' THEN CONCAT_WS( ',', c.NUMERIC_PRECISION, c.NUMERIC_SCALE ) WHEN 'decimal' THEN CONCAT_WS( ',', c.NUMERIC_PRECISION, c.NUMERIC_SCALE ) WHEN 'int' THEN c.NUMERIC_PRECISION WHEN 'bigint' THEN c.NUMERIC_PRECISION ELSE '' END AS data_type_long,COLUMN_COMMENT column_comment FROM INFORMATION_SCHEMA.COLUMNS c WHERE table_name = ? AND table_schema = ?", tableName, dbName).Scan(&Columns).Error
 	return err, Columns
 }
 
 func (autoCodeService *AutoCodeService) DropTable(tableName string) error {
-	return global.GVA_DB.Exec("DROP TABLE " + tableName).Error
+	return global.DB.Exec("DROP TABLE " + tableName).Error
 }
 
 //@author: [SliverHorn](https://github.com/SliverHorn)
@@ -332,31 +332,31 @@ func (autoCodeService *AutoCodeService) addAutoMoveFile(data *tplData) {
 	}
 	if strings.Contains(fileSlice[1], "server") {
 		if strings.Contains(fileSlice[n-2], "router") {
-			data.autoMoveFilePath = filepath.Join(global.GVA_CONFIG.AutoCode.Root, global.GVA_CONFIG.AutoCode.Server,
-				global.GVA_CONFIG.AutoCode.SRouter, base)
+			data.autoMoveFilePath = filepath.Join(global.Config.AutoCode.Root, global.Config.AutoCode.Server,
+				global.Config.AutoCode.SRouter, base)
 		} else if strings.Contains(fileSlice[n-2], "api") {
-			data.autoMoveFilePath = filepath.Join(global.GVA_CONFIG.AutoCode.Root,
-				global.GVA_CONFIG.AutoCode.Server, global.GVA_CONFIG.AutoCode.SApi, base)
+			data.autoMoveFilePath = filepath.Join(global.Config.AutoCode.Root,
+				global.Config.AutoCode.Server, global.Config.AutoCode.SApi, base)
 		} else if strings.Contains(fileSlice[n-2], "service") {
-			data.autoMoveFilePath = filepath.Join(global.GVA_CONFIG.AutoCode.Root,
-				global.GVA_CONFIG.AutoCode.Server, global.GVA_CONFIG.AutoCode.SService, base)
+			data.autoMoveFilePath = filepath.Join(global.Config.AutoCode.Root,
+				global.Config.AutoCode.Server, global.Config.AutoCode.SService, base)
 		} else if strings.Contains(fileSlice[n-2], "model") {
-			data.autoMoveFilePath = filepath.Join(global.GVA_CONFIG.AutoCode.Root,
-				global.GVA_CONFIG.AutoCode.Server, global.GVA_CONFIG.AutoCode.SModel, base)
+			data.autoMoveFilePath = filepath.Join(global.Config.AutoCode.Root,
+				global.Config.AutoCode.Server, global.Config.AutoCode.SModel, base)
 		} else if strings.Contains(fileSlice[n-2], "request") {
-			data.autoMoveFilePath = filepath.Join(global.GVA_CONFIG.AutoCode.Root,
-				global.GVA_CONFIG.AutoCode.Server, global.GVA_CONFIG.AutoCode.SRequest, base)
+			data.autoMoveFilePath = filepath.Join(global.Config.AutoCode.Root,
+				global.Config.AutoCode.Server, global.Config.AutoCode.SRequest, base)
 		}
 	} else if strings.Contains(fileSlice[1], "web") {
 		if strings.Contains(fileSlice[n-1], "js") {
-			data.autoMoveFilePath = filepath.Join(global.GVA_CONFIG.AutoCode.Root,
-				global.GVA_CONFIG.AutoCode.Web, global.GVA_CONFIG.AutoCode.WApi, base)
+			data.autoMoveFilePath = filepath.Join(global.Config.AutoCode.Root,
+				global.Config.AutoCode.Web, global.Config.AutoCode.WApi, base)
 		} else if strings.Contains(fileSlice[n-2], "form") {
-			data.autoMoveFilePath = filepath.Join(global.GVA_CONFIG.AutoCode.Root,
-				global.GVA_CONFIG.AutoCode.Web, global.GVA_CONFIG.AutoCode.WForm, filepath.Base(filepath.Dir(filepath.Dir(data.autoCodePath))), strings.TrimSuffix(base, filepath.Ext(base))+"Form.vue")
+			data.autoMoveFilePath = filepath.Join(global.Config.AutoCode.Root,
+				global.Config.AutoCode.Web, global.Config.AutoCode.WForm, filepath.Base(filepath.Dir(filepath.Dir(data.autoCodePath))), strings.TrimSuffix(base, filepath.Ext(base))+"Form.vue")
 		} else if strings.Contains(fileSlice[n-2], "table") {
-			data.autoMoveFilePath = filepath.Join(global.GVA_CONFIG.AutoCode.Root,
-				global.GVA_CONFIG.AutoCode.Web, global.GVA_CONFIG.AutoCode.WTable, filepath.Base(filepath.Dir(filepath.Dir(data.autoCodePath))), base)
+			data.autoMoveFilePath = filepath.Join(global.Config.AutoCode.Root,
+				global.Config.AutoCode.Web, global.Config.AutoCode.WTable, filepath.Base(filepath.Dir(filepath.Dir(data.autoCodePath))), base)
 		}
 	}
 }
@@ -407,7 +407,7 @@ func (autoCodeService *AutoCodeService) AutoCreateApi(a *system.AutoCodeStruct) 
 			Method:      "GET",
 		},
 	}
-	err = global.GVA_DB.Transaction(func(tx *gorm.DB) error {
+	err = global.DB.Transaction(func(tx *gorm.DB) error {
 
 		for _, v := range apiList {
 			var api system.SysApi

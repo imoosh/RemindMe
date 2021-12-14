@@ -1,6 +1,7 @@
 package example
 
 import (
+	"RemindMe/model"
 	"errors"
 	"fmt"
 	"strconv"
@@ -35,7 +36,7 @@ func (exa *ExcelService) ParseInfoList2Excel(infoList []system.SysBaseMenu, file
 func (exa *ExcelService) ParseExcel2InfoList() ([]system.SysBaseMenu, error) {
 	skipHeader := true
 	fixedHeader := []string{"ID", "路由Name", "路由Path", "是否隐藏", "父节点", "排序", "文件名称"}
-	file, err := excelize.OpenFile(global.GVA_CONFIG.Excel.Dir + "ExcelImport.xlsx")
+	file, err := excelize.OpenFile(global.Config.Excel.Dir + "ExcelImport.xlsx")
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +65,7 @@ func (exa *ExcelService) ParseExcel2InfoList() ([]system.SysBaseMenu, error) {
 		hidden, _ := strconv.ParseBool(row[3])
 		sort, _ := strconv.Atoi(row[5])
 		menu := system.SysBaseMenu{
-			GVA_MODEL: global.GVA_MODEL{
+			Model: models.Model{
 				ID: uint(id),
 			},
 			Name:      row[1],
