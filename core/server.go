@@ -30,7 +30,7 @@ func RunWindowsServer() {
     //pcAddr := fmt.Sprintf(":%d", global.Config.System.Addr)
     //pcServe := initServer(pcAddr, pcRouter)
 
-    wxmpAddr := fmt.Sprintf(":8000")
+    wxmpAddr := fmt.Sprintf(":80")
     wxmpSeve := initServer(wxmpAddr, wxmpRouter)
 
     //go global.Log.Error(pcServe.ListenAndServe().Error())

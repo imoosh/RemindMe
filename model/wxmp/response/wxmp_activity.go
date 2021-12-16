@@ -38,8 +38,6 @@ type ActivityResponse struct {
     RemindAt     int            `json:"remindAt"`     // 提醒时间，未订阅前使用创建时设定的默认时间，订阅后可修改
     Remark       string         `json:"remark"`       // 活动备注
     Privacy      int            `json:"privacy"`      // 隐私级别，见字典项
-    IsTplRemind  bool           `json:"isTplRemind"`  // 模板提醒，创建活动时
-    IsSmsRemind  bool           `json:"isSmsRemind"`  // 短信提醒
     Publisher    ActivityUser   `json:"publisher"`    // 发布者信息
     Subscribers  []ActivityUser `json:"subscribers"`  // 订阅者信息
     IsSubscribed bool           `json:"isSubscribed"` // 当前用户是否已订阅

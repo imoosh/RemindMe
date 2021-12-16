@@ -26,6 +26,14 @@ func (s *UserService) CreateUser(user *wxmp.WxmpUser) {
     }
 }
 
+func (s *UserService) GetUserById(id uint) (u *wxmp.WxmpUser, err error) {
+    var user wxmp.WxmpUser
+    if err = global.DB.Where("id = ?", id).First(&user).Error; err != nil {
+        global.Log.Error("查询用户信息失败", zap.Any("id", id))
+    }
+    return &user, err
+}
+
 func (s *UserService) GetUserByOpenId(openid string) (u *wxmp.WxmpUser, err error) {
     var user wxmp.WxmpUser
     if err = global.DB.Where("openid = ?", openid).First(&user).Error; err != nil {

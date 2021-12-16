@@ -19,8 +19,6 @@ type WxmpActivity struct {
 	Longitude float64 `json:"longitude" gorm:"column:longitude; comment:地址精度"`
 
 	RemindAt    int  `json:"remind_at" gorm:"column:remind_at; comment:创建时设置提醒时间,见字典项"`
-	IsTplRemind bool `json:"is_tpl_remind" gorm:"column:is_tpl_remind; comment:模板提醒"`
-	IsSmsRemind bool `json:"is_sms_remind" gorm:"column:is_sms_remind; comment:短信提醒"`
 	Privacy     int  `json:"privacy" gorm:"column:privacy; comment:0:仅自己可见,1:可分享他人,2:完全公开"`
 
 	Remark string `json:"remark" gorm:"column:remark; type:varchar(512); comment:活动备注"`
