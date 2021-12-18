@@ -23,7 +23,7 @@ type ActivityLocation struct {
     Longitude float64 `json:"longitude"` // 地址精度
 }
 
-// 创建活动
+// 创建活动请求
 type ActivityCreateRequest struct {
     Title    string           `json:"title"`    // 活动名称
     Time     ActivityTime     `json:"time"`     // 活动时间
@@ -37,8 +37,22 @@ type ActivityCreateRequest struct {
     IsSmsRemind bool `json:"isSmsRemind"` // 短信提醒
 }
 
-// 删除活动
+// 删除活动请求
 type ActivityDeleteRequest struct {
     Id          uint `json:"id"`
     PublisherId uint `json:"publisherId"`
+}
+
+// 活动详情请求
+type ActivityDetailRequest struct {
+    Id          uint `json:"id"`
+    PublisherId uint `json:"publisherId"`
+}
+
+// 订阅活动请求
+type ActivitySubscribeRequest struct {
+    Id          uint `json:"id"`
+    RemindAt    int  `json:"remindAt"`
+    IsTplRemind bool `json:"isTplRemind"`
+    IsSmsRemind bool `json:"isSmsRemind"`
 }

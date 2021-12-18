@@ -43,3 +43,18 @@ type ActivityResponse struct {
     IsSubscribed bool           `json:"isSubscribed"` // 当前用户是否已订阅
     IsPublisher  bool           `json:"isPublisher"`  // 当前用户是否是发布者
 }
+
+// 活动详情
+type ActivityDetailResponse struct {
+    Id           uint           `json:"id"`           // 活动id
+    Title        string         `json:"title"`        // 活动名称
+    Time         ActivityTime   `json:"time"`         // 活动时间
+    Addr         ActivityAddr   `json:"addr"`         // 活动地址
+    RemindAt     int            `json:"remindAt"`     // 提醒时间，未订阅前使用创建时设定的默认时间，订阅后可修改
+    Remark       string         `json:"remark"`       // 活动备注
+    Privacy      int            `json:"privacy"`      // 隐私级别，见字典项
+    Publisher    ActivityUser   `json:"publisher"`    // 发布者信息
+    Subscribers  []ActivityUser `json:"subscribers"`  // 订阅者信息
+    IsSubscribed bool           `json:"isSubscribed"` // 当前用户是否已订阅
+    IsPublisher  bool           `json:"isPublisher"`  // 当前用户是否是发布者
+}

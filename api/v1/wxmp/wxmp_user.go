@@ -110,8 +110,22 @@ func (b *UserApi) WXMiniProgramOauth(c *gin.Context) {
     var req wxmpReq.WXMiniProgramOauthRequest
     _ = c.ShouldBindJSON(&req)
 
-    info, err := weapp.DecryptUserInfo(req.SessionKey, req.RawData, req.EncryptedData, req.Signature, req.IV)
+    //info, err := weapp.DecryptUserInfo(req.SessionKey, req.RawData, req.EncryptedData, req.Signature, req.IV)
+    //if err != nil {
+    //    global.Log.Error("数据解密失败!", zap.Any("err", err))
+    //    response.FailWithMessage(err.Error(), c)
+    //    return
+    //}
+
+    // 解密数据
+    var info = new(weapp.UserInfo)
+    raw, err := weapp.DecryptUserData(req.SessionKey, req.EncryptedData, req.IV)
     if err != nil {
+        global.Log.Error("数据解密失败!", zap.Any("err", err))
+        response.FailWithMessage(err.Error(), c)
+        return
+    }
+    if err := json.Unmarshal(raw, info); err != nil {
         global.Log.Error("数据解密失败!", zap.Any("err", err))
         response.FailWithMessage(err.Error(), c)
         return
