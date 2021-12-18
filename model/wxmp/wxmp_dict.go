@@ -4,11 +4,15 @@ import (
 	"RemindMe/model"
 )
 
-type WxmpDict struct {
+type Dict struct {
 	models.Model
     Type  string `json:"type" gorm:"column:type; type:varchar(64); comment:类型名"`
     Id    int    `json:"index" gorm:"column:index; comment:标签编号"`
     Label string `json:"label" gorm:"column:label; type:varchar(64); comment:标签名"`
+}
+
+func (Dict) TableName() string {
+    return "wxmp_dict"
 }
 
 var dict = map[string]map[int]string{

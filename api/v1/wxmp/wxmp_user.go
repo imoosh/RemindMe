@@ -92,7 +92,7 @@ func (b *UserApi) GetWxMiniProgramSessionKey(c *gin.Context) {
     }
 
     // 根据openid+unionid创建小程序用户入库，用户头像性别+手机号码后续更新，并缓存session_key:openid+unionid
-    userService.CreateUser(&wxmp.WxmpUser{OpenID: info.OpenID, UnionID: info.UnionID})
+    userService.CreateUser(&wxmp.User{OpenID: info.OpenID, UnionID: info.UnionID})
 
     response.OkWithData(&wxmpRes.GetWxMiniProgramSessionKeyResponse{
         SessionKey: info.SessionKey,
@@ -139,7 +139,7 @@ func (b *UserApi) WXMiniProgramOauth(c *gin.Context) {
     }
 
     // 通过openid更新用户基本信息
-    var u = wxmp.WxmpUser{Nickname: info.Nickname, Gender: info.Gender, Avatar: info.Avatar}
+    var u = wxmp.User{Nickname: info.Nickname, Gender: info.Gender, Avatar: info.Avatar}
     userService.UpdateBasicInfo(openid, &u)
     user, err := userService.GetUserByOpenId(openid)
     if err != nil {
