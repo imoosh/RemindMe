@@ -21,7 +21,7 @@ type UserService struct {
 //}
 
 func (s *UserService) CreateUser(user *wxmp.User) {
-    if err := global.DB.Clauses(clause.OnConflict{DoNothing: true}).Create(&user).Error; err != nil {
+    if err := global.DB.Debug().Clauses(clause.OnConflict{DoNothing: true}).Create(&user).Error; err != nil {
         global.Log.Error("创建小程序用户失败", zap.Any("err", err))
     }
 }
