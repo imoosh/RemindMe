@@ -145,7 +145,7 @@ func (api *ActivityApi) ActivityDetail(c *gin.Context) {
     }
 
     // 查询活动信息
-    ac, err := activityService.QueryActivityDetail(uint(activityId))
+    ac, err := activityService.ActivityDetail(uint(activityId))
     if err != nil {
         response.FailWithMessage("活动不存在", c)
         return
@@ -207,7 +207,8 @@ func (api *ActivityApi) ActivityDetail(c *gin.Context) {
             IsTplRemind: item.IsTplRemind,
             IsSmsRemind: item.IsSmsRemind,
         })
-        if item.ID == user.ID {
+        // 订阅者id与用户id相同，表示当前用户已订阅活动
+        if item.Subscriber.ID == user.ID {
             res.IsSubscribed = true
             res.SubscriberIndex = idx
         }

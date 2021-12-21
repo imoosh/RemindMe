@@ -280,7 +280,7 @@ func TestActivityService_QueryActivities(t *testing.T) {
 // 查询活动详情
 func TestActivityService_QueryActivityDetail(t *testing.T) {
     Init()
-    a, _ := activityService.QueryActivityDetail(2)
+    a, _ := activityService.ActivityDetail(2)
     t.Log(a)
 }
 

@@ -24,7 +24,7 @@ func (s *ActivityService) CreateActivity(userId uint, ac *wxmp.Activity) (err er
 }
 
 // 查询活动详情
-func (s *ActivityService) QueryActivityDetail(activityId uint) (activity *wxmp.Activity, err error) {
+func (s *ActivityService) ActivityDetail(activityId uint) (activity *wxmp.Activity, err error) {
     activity = new(wxmp.Activity)
     if err = global.DB.
         Preload("Publisher").
