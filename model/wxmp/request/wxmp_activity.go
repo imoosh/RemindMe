@@ -25,6 +25,23 @@ type ActivityLocation struct {
 
 // 创建活动请求
 type ActivityCreateRequest struct {
+    Type     string           `json:"type"`     // 活动类型
+    Title    string           `json:"title"`    // 活动名称
+    Time     ActivityTime     `json:"time"`     // 活动时间
+    Location ActivityLocation `json:"location"` // 活动地址
+    Remark   string           `json:"remark"`   // 活动备注
+    //Publisher   ActivityUser     `json:"publisher"`   // 发布者信息
+    //Subscribers []ActivityUser   `json:"subscribers"` // 订阅者信息
+    Privacy     int  `json:"privacy"`     // 隐私级别，见字典项
+    RemindAt    int  `json:"remindAt"`    // 创建时设置提醒时间,见字典项"
+    IsTplRemind bool `json:"isTplRemind"` // 模板提醒
+    IsSmsRemind bool `json:"isSmsRemind"` // 短信提醒
+}
+
+// 更新活动请求
+type ActivityUpdateRequest struct {
+    Id       uint             `json:"id"`       // 活动id
+    Type     string           `json:"type"`     // 活动类型
     Title    string           `json:"title"`    // 活动名称
     Time     ActivityTime     `json:"time"`     // 活动时间
     Location ActivityLocation `json:"location"` // 活动地址

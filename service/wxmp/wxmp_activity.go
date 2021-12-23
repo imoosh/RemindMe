@@ -23,6 +23,14 @@ func (s *ActivityService) CreateActivity(userId uint, ac *wxmp.Activity) (err er
     return
 }
 
+// 更新活动
+func (s *ActivityService) UpdateActivity(activityId uint, ac *wxmp.Activity) (err error) {
+    if err = global.DB.Debug().Where("id = ?", activityId).UpdateColumns(ac).Error; err != nil {
+       global.Log.Error("更新活动失败", zap.Any("err", err))
+    }
+    return
+}
+
 // 查询活动详情
 func (s *ActivityService) ActivityDetail(activityId uint) (activity *wxmp.Activity, err error) {
     activity = new(wxmp.Activity)
@@ -38,14 +46,18 @@ func (s *ActivityService) ActivityDetail(activityId uint) (activity *wxmp.Activi
 }
 
 // 查询用户参加的所有活动
-func (s *ActivityService) QueryActivities(userId uint) (list []wxmp.Activity, err error) {
+func (s *ActivityService) QueryActivities(userId uint, typ string) (list []wxmp.Activity, err error) {
     list = make([]wxmp.Activity, 0)
-    if err = global.DB.Debug().
+    query := global.DB.Debug().
         Preload("Publisher").
         Preload("Subscriptions").
         Preload("Subscriptions.Subscriber").
-        Where("publisher_id = ?", userId).
-        Find(&list).Error; err != nil {
+        Where("publisher_id = ?", userId)
+    if typ != "all" && typ != "" {
+        query = query.Where("type = ?", typ)
+    }
+
+    if err = query.Find(&list).Error; err != nil {
         global.Log.Error("获取活动列表失败", zap.Any("err", err))
         return nil, err
     }

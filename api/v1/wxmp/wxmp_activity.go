@@ -18,7 +18,7 @@ type ActivityApi struct {
 }
 
 func (api *ActivityApi) CreateActivity(c *gin.Context) {
-    var req wxmpReq.ActivityCreateRequest
+    var req wxmpReq.ActivityUpdateRequest
     _ = c.ShouldBindJSON(&req)
 
     id := utils.GetWxmpUserID(c)
@@ -34,6 +34,7 @@ func (api *ActivityApi) CreateActivity(c *gin.Context) {
         return
     }
     var ac = wxmp.Activity{
+        Type:      req.Type,
         Title:     req.Title,
         Time:      models.LocalTime{Time: t},
         IsLunar:   req.Time.IsLunar,
@@ -48,7 +49,7 @@ func (api *ActivityApi) CreateActivity(c *gin.Context) {
         Remark:    req.Remark,
     }
 
-    if err := activityService.CreateActivity(id, &ac); err != nil {
+    if err := activityService.CreateActivity(req.Id, &ac); err != nil {
         response.FailWithMessage("创建活动失败", c)
         return
     }
@@ -63,8 +64,10 @@ func (api *ActivityApi) ActivityList(c *gin.Context) {
         return
     }
 
+    typ := c.Query("type")
+
     // 通过用户id获取所有相关的活动
-    activities, err := activityService.QueryActivities(user.ID)
+    activities, err := activityService.QueryActivities(user.ID, typ)
     if err != nil {
         response.FailWithMessage("获取活动列表失败", c)
         return
@@ -72,15 +75,14 @@ func (api *ActivityApi) ActivityList(c *gin.Context) {
 
     var list = make([]wxmpRes.ActivityResponse, 0)
     for _, ac := range activities {
-        var timeText string
-        if !ac.IsLunar {
-            timeText = ac.Time.Format("2006-01-02 15:04") + " " + getWeekdayString(ac.NWeek)
-        } else {
-
+        var timeText = ac.Time.Format("2006-01-02 15:04") + " " + getWeekdayString(ac.NWeek)
+        if ac.IsLunar {
+            timeText = timeText + " (" + ac.Lunar + ")"
         }
 
         res := wxmpRes.ActivityResponse{
             Id:    ac.ID,
+            Type:  ac.Type,
             Title: ac.Title,
             Time: wxmpRes.ActivityTime{
                 Text:        timeText,
@@ -92,7 +94,7 @@ func (api *ActivityApi) ActivityList(c *gin.Context) {
                 ObviousDate: getObviousDate(ac.Time.Time),
                 ObviousTime: getObviousTime(ac.Time.Time),
             },
-            Addr: wxmpRes.ActivityAddr{
+            Location: wxmpRes.ActivityAddr{
                 Address:   ac.Address,
                 Latitude:  ac.Latitude,
                 Longitude: ac.Longitude,
@@ -129,7 +131,35 @@ func (api *ActivityApi) ActivityList(c *gin.Context) {
 }
 
 func (api *ActivityApi) UpdateActivity(c *gin.Context) {
+    var req wxmpReq.ActivityUpdateRequest
+    _ = c.ShouldBindJSON(&req)
 
+    t, err := time.Parse(string("2006-01-02 15:04"), req.Time.Solar)
+    if err != nil {
+        global.Log.Error("解析时间失败", zap.Any("err", err))
+        response.FailWithMessage("创建活动失败", c)
+        return
+    }
+    var ac = wxmp.Activity{
+        Type:        req.Type,
+        Title:       req.Title,
+        Time:        models.LocalTime{Time: t},
+        IsLunar:     req.Time.IsLunar,
+        Lunar:       req.Time.Lunar,
+        Periodic:    req.Time.Periodic,
+        NWeek:       req.Time.NWeek,
+        Address:     req.Location.Address,
+        Latitude:    req.Location.Latitude,
+        Longitude:   req.Location.Longitude,
+        RemindAt:    req.RemindAt,
+        Privacy:     req.Privacy,
+        Remark:      req.Remark,
+    }
+    if err = activityService.UpdateActivity(req.Id, &ac); err != nil {
+        response.FailWithMessage("更新失败", c)
+        return
+    }
+    response.OkWithMessage("更新成功", c)
 }
 
 func (api *ActivityApi) ActivityDetail(c *gin.Context) {
@@ -152,15 +182,14 @@ func (api *ActivityApi) ActivityDetail(c *gin.Context) {
     }
     global.Log.Error("活动详情", zap.Any("activity", ac))
 
-    var timeText string
-    if !ac.IsLunar {
-        timeText = ac.Time.Format("2006-01-02 15:04") + " " + getWeekdayString(ac.NWeek)
-    } else {
-
+    var timeText = ac.Time.Format("2006-01-02 15:04") + " " + getWeekdayString(ac.NWeek)
+    if ac.IsLunar {
+        timeText = timeText + " (" + ac.Lunar + ")"
     }
 
     res := wxmpRes.ActivityResponse{
         Id:    ac.ID,
+        Type:  ac.Type,
         Title: ac.Title,
         Time: wxmpRes.ActivityTime{
             Text:        timeText,
@@ -172,7 +201,7 @@ func (api *ActivityApi) ActivityDetail(c *gin.Context) {
             ObviousDate: getObviousDate(ac.Time.Time),
             ObviousTime: getObviousTime(ac.Time.Time),
         },
-        Addr: wxmpRes.ActivityAddr{
+        Location: wxmpRes.ActivityAddr{
             Address:   ac.Address,
             Latitude:  ac.Latitude,
             Longitude: ac.Longitude,

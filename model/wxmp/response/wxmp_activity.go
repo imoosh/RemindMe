@@ -32,9 +32,10 @@ type ActivityAddr struct {
 // 活动信息
 type ActivityResponse struct {
     Id              uint           `json:"id"`              // 活动id
+    Type            string         `json:"type"`            // 活动类型
     Title           string         `json:"title"`           // 活动名称
     Time            ActivityTime   `json:"time"`            // 活动时间
-    Addr            ActivityAddr   `json:"addr"`            // 活动地址
+    Location        ActivityAddr   `json:"location"`        // 活动地址
     RemindAt        int            `json:"remindAt"`        // 提醒时间，未订阅前使用创建时设定的默认时间，订阅后可修改
     Remark          string         `json:"remark"`          // 活动备注
     Privacy         int            `json:"privacy"`         // 隐私级别，见字典项
@@ -50,7 +51,7 @@ type ActivityDetailResponse struct {
     Id           uint           `json:"id"`           // 活动id
     Title        string         `json:"title"`        // 活动名称
     Time         ActivityTime   `json:"time"`         // 活动时间
-    Addr         ActivityAddr   `json:"addr"`         // 活动地址
+    Location     ActivityAddr   `json:"location"`     // 活动地址
     RemindAt     int            `json:"remindAt"`     // 提醒时间，未订阅前使用创建时设定的默认时间，订阅后可修改
     Remark       string         `json:"remark"`       // 活动备注
     Privacy      int            `json:"privacy"`      // 隐私级别，见字典项

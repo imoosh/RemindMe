@@ -6,6 +6,7 @@ import (
 
 type Activity struct {
     models.Model
+    Type    string           `json:"type" gorm:"column:type; type:varchar(16); comment:活动类型,db:代办,dk:打卡,sr:生日,sjb:时间表"`
     Title   string           `json:"title" gorm:"column:title; type:varchar(64); comment:活动名称"`
     Time    models.LocalTime `json:"time" gorm:"column:time; type:datetime(3); comment:活动时间"`
     IsLunar bool             `json:"isLunar" gorm:"column:is_lunar; comment:是否为农历"`
