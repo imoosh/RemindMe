@@ -273,7 +273,7 @@ func TestActivityService_CreateActivity(t *testing.T) {
 // 查询活动列表
 func TestActivityService_QueryActivities(t *testing.T) {
     Init()
-    list, _ := activityService.QueryActivities(1)
+    list, _ := activityService.QueryActivities(1, "all")
     t.Log(list)
 }
 
