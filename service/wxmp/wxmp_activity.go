@@ -28,6 +28,10 @@ func (s *ActivityService) UpdateActivity(activityId uint, ac *wxmp.Activity) (er
     if err = global.DB.Debug().Where("id = ?", activityId).UpdateColumns(ac).Error; err != nil {
        global.Log.Error("更新活动失败", zap.Any("err", err))
     }
+
+    var tmp wxmp.Activity
+    global.DB.Debug().Where("id = ?", activityId).First(&tmp)
+    global.Log.Error("查询活动", zap.Any("activity", tmp))
     return
 }
 
