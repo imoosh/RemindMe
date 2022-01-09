@@ -63,9 +63,8 @@ func (api *ActivityApi) ActivityList(c *gin.Context) {
         return
     }
 
-    typ := c.Query("type")
-
     // 通过用户id获取所有相关的活动
+    typ := c.Query("type")
     activities, err := activityService.QueryActivities(user.ID, typ)
     if err != nil {
         response.FailWithMessage("获取活动列表失败", c)
@@ -79,6 +78,7 @@ func (api *ActivityApi) ActivityList(c *gin.Context) {
 
         res := wxmpRes.ActivityResponse{
             Id:          ac.ID,
+            SubId:       ac.SubId,
             Type:        ac.Type,
             Title:       ac.Title,
             FullDate:    _date + string(' ') + _time + string(' ') + getWeekdayString(ac.NWeek),
@@ -118,7 +118,6 @@ func (api *ActivityApi) ActivityList(c *gin.Context) {
             if item.ID == user.ID {
                 res.IsSubscribed = true
                 res.MySubIndex = idx
-                break
             }
         }
         list = append(list, res)
@@ -176,7 +175,6 @@ func (api *ActivityApi) ActivityDetail(c *gin.Context) {
         response.FailWithMessage("活动不存在", c)
         return
     }
-    global.Log.Error("活动详情", zap.Any("activity", ac))
 
     _date := ac.Time.Format("2006-01-02")
     _time := ac.Time.Format("15:04")

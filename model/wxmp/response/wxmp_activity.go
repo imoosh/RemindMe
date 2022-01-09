@@ -21,6 +21,7 @@ type ActivityAddr struct {
 // 活动信息
 type ActivityResponse struct {
     Id           uint           `json:"id"`    // 活动id
+    SubId        uint           `json:"subId"` // 重复性活动子id
     Type         string         `json:"type"`  // 活动类型
     Title        string         `json:"title"` // 活动名称
     FullDate     string         `json:"fullDate"`

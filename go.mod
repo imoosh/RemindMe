@@ -15,7 +15,7 @@ require (
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-redis/redis/v8 v8.11.0
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/gofrs/uuid v3.2.0+incompatible // indirect
+	github.com/golang-module/carbon v1.5.5
 	github.com/gookit/color v1.3.1
 	github.com/jordan-wright/email v0.0.0-20200824153738-3f5bafa1cd84
 	github.com/lestrrat-go/file-rotatelogs v2.3.0+incompatible
@@ -33,6 +33,8 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/gin-swagger v1.3.0
 	github.com/swaggo/swag v1.7.0
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.320
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.320
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.19
 	github.com/unrolled/secure v1.0.7
 	github.com/xuri/excelize/v2 v2.4.1

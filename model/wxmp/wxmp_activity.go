@@ -6,6 +6,7 @@ import (
 
 type Activity struct {
     models.Model
+    SubId uint             `gorm:"-"` // 周期性活动子id
     Type  string           `json:"type" gorm:"column:type; type:varchar(16); comment:活动类型,db:代办,dk:打卡,sr:生日,sjb:时间表"`
     Title string           `json:"title" gorm:"column:title; type:varchar(64); comment:活动名称"`
     Time  models.LocalTime `json:"time" gorm:"column:time; type:datetime(3); comment:活动时间"`
@@ -17,8 +18,8 @@ type Activity struct {
     Latitude  float64 `json:"latitude" gorm:"column:latitude; comment:地址纬度"`
     Longitude float64 `json:"longitude" gorm:"column:longitude; comment:地址精度"`
 
-    Privacy  int    `json:"privacy" gorm:"column:privacy; type:int(4); comment:0:仅自己可见,1:可分享他人,2:完全公开"`
-    Remark   string `json:"remark" gorm:"column:remark; type:varchar(512); comment:活动备注"`
+    Privacy int    `json:"privacy" gorm:"column:privacy; type:int(4); comment:0:仅自己可见,1:可分享他人,2:完全公开"`
+    Remark  string `json:"remark" gorm:"column:remark; type:varchar(512); comment:活动备注"`
 
     // 发布者信息
     Publisher User `gorm:"foreignKey:PublisherID"`

@@ -4,6 +4,7 @@ import (
 	"RemindMe/core"
 	"RemindMe/global"
 	"RemindMe/initialize"
+	"fmt"
 )
 
 //go:generate go env -w GO111MODULE=on
@@ -20,6 +21,7 @@ import (
 // @BasePath /
 func main() {
 	global.VP = core.Viper()      // 初始化Viper
+	fmt.Println(global.Config.Zap)
 	global.Log = core.Zap()       // 初始化zap日志库
 	global.DB = initialize.Gorm() // gorm连接数据库
 	initialize.Timer()

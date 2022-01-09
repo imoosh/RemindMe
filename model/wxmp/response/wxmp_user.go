@@ -14,6 +14,7 @@ type WXMiniProgramOauthResponse struct {
 
 // 用户信息
 type UserDataResponse struct {
+    Id       uint   `json:"id"`
     Avatar   string `json:"avatar"`
     NickName string `json:"nickname"`
     Group    struct {

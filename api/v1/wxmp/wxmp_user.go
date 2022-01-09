@@ -57,8 +57,7 @@ func (b *UserApi) UserInfo(c *gin.Context) {
         response.FailWithMessage("获取用户信息失败", c)
         return
     }
-
-    response.OkWithData(&wxmpRes.UserDataResponse{Avatar: info.Avatar, NickName: info.Nickname}, c)
+    response.OkWithData(&wxmpRes.UserDataResponse{Id: info.ID, Avatar: info.Avatar, NickName: info.Nickname}, c)
 }
 
 // @Tags Base
@@ -177,7 +176,10 @@ func (b *UserApi) UserData(c *gin.Context) {
         return
     }
 
+    global.Log.Sugar().Error(info)
+
     var res = wxmpRes.UserDataResponse{
+        Id:       info.ID,
         Avatar:   info.Avatar,
         NickName: info.Nickname,
     }
