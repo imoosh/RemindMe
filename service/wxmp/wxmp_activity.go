@@ -6,12 +6,35 @@ import (
     "RemindMe/model/wxmp"
     wxmpReq "RemindMe/model/wxmp/request"
     "errors"
+    "github.com/Lofanmi/chinese-calendar-golang/calendar"
     "github.com/golang-module/carbon"
     "go.uber.org/zap"
     "gorm.io/gorm"
     "gorm.io/gorm/clause"
-    "sort"
     "time"
+)
+
+var (
+    _pageSize     = 8
+    periodicFuncs = map[int]func(t time.Time, n int) time.Time{
+        0: func(t time.Time, n int) time.Time { return t },
+        1: func(t time.Time, n int) time.Time { return carbon.Time2Carbon(t).AddDays(n).Time },
+        2: func(t time.Time, n int) time.Time { return carbon.Time2Carbon(t).AddWeeks(n).Time },
+        3: func(t time.Time, n int) time.Time { return carbon.Time2Carbon(t).AddMonthsNoOverflow(n).Time },
+        4: func(t time.Time, n int) time.Time { return carbon.Time2Carbon(t).AddMonthsNoOverflow(n).Time },
+        5: func(t time.Time, n int) time.Time {
+            var tim = t
+            var calTmp, calTim *calendar.Calendar
+            calTmp = calendar.BySolar(int64(tim.Year()), int64(tim.Month()), int64(tim.Day()), 0, 0, 0)
+            calTim = calendar.ByLunar(calTmp.Lunar.GetYear()+int64(n), calTmp.Lunar.GetMonth(), calTmp.Lunar.GetDay(), 0, 0, 0, false)
+            tim = time.Date(int(calTim.Solar.GetYear()), time.Month(calTim.Solar.GetMonth()), int(calTim.Solar.GetDay()), 0, 0, 0, 0, time.UTC).Local()
+            if tim == time.Unix(0, 0) && calTmp.Lunar.GetDay() == 30 {
+                calTim = calendar.ByLunar(calTmp.Lunar.GetYear()+int64(n), calTmp.Lunar.GetMonth(), calTmp.Lunar.GetDay()-1, 0, 0, 0, false)
+                tim = time.Date(int(calTim.Solar.GetYear()), time.Month(calTim.Solar.GetMonth()), int(calTim.Solar.GetDay()), 0, 0, 0, 0, time.UTC).Local()
+            }
+            return time.Date(tim.Year(), tim.Month(), tim.Day(), t.Hour(), t.Minute(), t.Second(), 0, t.Location())
+        },
+    }
 )
 
 type ActivityService struct {
@@ -35,33 +58,51 @@ func (s *ActivityService) UpdateActivity(activityId uint, ac *wxmp.Activity) (er
 }
 
 // ActivityDetail 活动详情
-func (s *ActivityService) ActivityDetail(activityId uint) (activity *wxmp.Activity, err error) {
+func (s *ActivityService) ActivityDetail(activityId, subId uint) (activity *wxmp.Activity, err error) {
     if activity, err = s.activityDetail(activityId); err != nil {
         return nil, err
-    } else if activity.Periodic == 0 {
-        return activity, nil
-    } else {
-        s.calcNextPeriodicActivity(activity)
+    }
+    if activity.Periodic != 0 {
+        activity, err = s.getSpecifiedPeriodicSubActivity(activity, subId)
     }
     return
 }
 
 // QueryActivities 活动列表
-func (s *ActivityService) QueryActivities(userId uint, typ string) (list []wxmp.Activity, err error) {
-    var as []wxmp.Activity
+func (s *ActivityService) QueryActivities(userId uint, acType string, cursor string) (list []wxmp.Activity, nextCursor string, err error) {
+    var acCursor *activityCursor
+    if acCursor, err = parseCursor(cursor); err != nil {
+        return
+    }
 
-    if as, err = s.queryActivities(userId, typ); err != nil {
-        return nil, err
+    var activities []wxmp.Activity
+    var tim = time.Unix(acCursor.ts, 0)
+    if activities, err = s.queryActivities(userId, acType, tim); err != nil {
+        return
     }
-    list = make([]wxmp.Activity, 0, len(as))
-    for _, item := range as {
-        if item.Periodic != 0 {
-            s.calcNextPeriodicActivity(&item)
+
+    list = make([]wxmp.Activity, 0)
+    for _, item := range activities {
+        if item.Periodic == 0 {
+            list = append(list, item)
+            continue
         }
-        list = append(list, item)
+        if tmp, err := s.getNotExpiredPeriodicSubActivities(item, acCursor); err == nil {
+            list = append(list, tmp...)
+        }
     }
-    s.sortActivitiesByTime(list)
-    return list, nil
+    if len(list) == 0 {
+        return
+    }
+    sortActivitiesByTime(list)
+
+    var n = len(list)
+    if n >= _pageSize {
+        n = _pageSize
+        var ac = list[n-1]
+        nextCursor = newCursor(ac.Time.Unix(), ac.ID, ac.SubId).String()
+    }
+    return list[:n], nextCursor, nil
 }
 
 // activityDetail 查询活动详情
@@ -82,12 +123,15 @@ func (s *ActivityService) activityDetail(activityId uint) (activity *wxmp.Activi
 }
 
 // QueryActivities 查询用户参加的所有活动
-func (s *ActivityService) queryActivities(userId uint, typ string) (list []wxmp.Activity, err error) {
+func (s *ActivityService) queryActivities(userId uint, typ string, tim time.Time) (list []wxmp.Activity, err error) {
+    if tim.Unix() == 0 {
+        tim = time.Now()
+    }
     // 获取用户所有订阅的活动id
     var activityIds = make([]uint, 0)
     if err = global.DB.Model(&wxmp.ActivitySubscription{}).
         Select("activity_id").
-        Where("subscriber_id = ? AND Status = 1", userId).
+        Where("subscriber_id = ? AND status = 1", userId).
         Find(&activityIds).Error; err != nil {
         global.Log.Error("获取用户订阅的活动列表失败", zap.Any("userId", userId), zap.Any("err", err))
         return nil, err
@@ -101,15 +145,15 @@ func (s *ActivityService) queryActivities(userId uint, typ string) (list []wxmp.
     list = make([]wxmp.Activity, 0)
     query := global.DB.Debug().
         Preload("Publisher").
-        Preload("Subscriptions", func(query *gorm.DB) *gorm.DB { return query.Order("updated_at") }).
+        Preload("Subscriptions", func(query *gorm.DB) *gorm.DB { return query.Where("status = 1").Order("updated_at") }).
         Preload("Subscriptions.Subscriber").
         Where("publisher_id = ? OR id IN(?)", userId, activityIds).
-        Where("periodic != 0 OR time >= ?", time.Now().Format(global.MsecLocalTimeFormat))
+        Where("periodic != 0 OR time >= ?", tim.Format(global.MsecLocalTimeFormat))
     if typ != "all" && typ != "" {
         query = query.Where("type = ?", typ)
     }
 
-    if err = query.Order("time").Find(&list).Error; err != nil {
+    if err = query.Order("time").Limit(10).Find(&list).Error; err != nil {
         global.Log.Error("获取活动列表失败", zap.Any("err", err))
         return nil, err
     }
@@ -184,51 +228,53 @@ func (s *ActivityService) ActivitySubscribers(activityId uint) (activity *wxmp.A
     return
 }
 
-// Bucket 定义一个通用的结构体
-type Bucket struct {
-    Slice []wxmp.Activity             //承载以任意结构体为元素构成的Slice
-    By    func(a, b interface{}) bool //排序规则函数,当需要对新的结构体slice进行排序时，只需定义这个函数即可
-}
-
-func (this Bucket) Len() int { return len(this.Slice) }
-
-func (this Bucket) Swap(i, j int) { this.Slice[i], this.Slice[j] = this.Slice[j], this.Slice[i] }
-
-func (this Bucket) Less(i, j int) bool { return this.By(this.Slice[i], this.Slice[j]) }
-
-func (s *ActivityService) sortActivitiesByTime(list []wxmp.Activity) {
-    f := func(a, b interface{}) bool {
-        return a.(wxmp.Activity).Time.Time.Before(b.(wxmp.Activity).Time.Time)
-    }
-    results := Bucket{By: f, Slice: list}
-    sort.Sort(results)
-}
-
-// 获取指定周期性活动的子活动
-func (s *ActivityService) calcNextPeriodicActivity(ac *wxmp.Activity) {
-    var funcs = map[int]func(t time.Time, n int) time.Time{
-        0: func(t time.Time, n int) time.Time { return t },
-        1: func(t time.Time, n int) time.Time { return carbon.Time2Carbon(t).AddDays(n).Time },
-        2: func(t time.Time, n int) time.Time { return carbon.Time2Carbon(t).AddWeeks(n).Time },
-        3: func(t time.Time, n int) time.Time { return carbon.Time2Carbon(t).AddMonthsNoOverflow(n).Time },
-        4: func(t time.Time, n int) time.Time { return carbon.Time2Carbon(t).AddMonthsNoOverflow(n).Time },
-        5: func(t time.Time, n int) time.Time { return carbon.Time2Carbon(t).AddMonthsNoOverflow(n).Time },
-    }
-    if ac.Periodic > len(funcs) || ac.Periodic < 0 {
-        return
+// 获取周期性活动的下次未过期的活动信息
+func (s *ActivityService) getNotExpiredPeriodicSubActivities(activity wxmp.Activity, cursor *activityCursor) (list []wxmp.Activity, err error) {
+    var (
+        ac  = activity
+        max = _pageSize
+        tim = time.Unix(cursor.ts, 0)
+    )
+    if ac.Periodic > len(periodicFuncs) || ac.Periodic < 0 {
+        return nil, errors.New("非法的周期活动")
     }
 
-    now := time.Now()
-    for i := 0; ; i++ {
-        t := funcs[ac.Periodic](ac.Time.Time, i)
-        if t.Before(now) {
+    // 下一次未过期的周期活动
+    list = make([]wxmp.Activity, 0, max)
+    for count, i := 0, 0; count < max; i++ {
+        t := periodicFuncs[ac.Periodic](activity.Time.Time, i)
+        ac.SubId = uint(i)
+        ac.Time = models.LocalTime{Time: t}
+
+        if t.Before(tim) || (t.Equal(tim) && ac.ID < cursor.id) || (t.Equal(tim) && ac.ID == cursor.id && ac.SubId <= cursor.subId) {
             continue
         }
-        ac.Time = models.LocalTime{Time: t}
         ac.NWeek = int(t.Weekday())
         ac.Lunar = s.jointLunar(t)
-        break
+        list = append(list, ac)
+        count++
     }
+    return
+}
+
+// 获取周期性活动的指定子活动信息
+func (s *ActivityService) getSpecifiedPeriodicSubActivity(old *wxmp.Activity, subId uint) (ac *wxmp.Activity, err error) {
+    ac = new(wxmp.Activity)
+    *ac = *old
+
+    if old.Periodic > len(periodicFuncs) || old.Periodic < 0 {
+        return nil, errors.New("非法的周期活动")
+    }
+    // 指定未来哪一次的周期活动
+    t := periodicFuncs[old.Periodic](old.Time.Time, int(subId))
+    if t.Before(time.Now()) {
+        return nil, errors.New("活动已结束")
+    }
+    ac.SubId = subId
+    ac.Time = models.LocalTime{Time: t}
+    ac.NWeek = int(t.Weekday())
+    ac.Lunar = s.jointLunar(t)
+    return
 }
 
 func (s *ActivityService) jointLunar(t time.Time) string {

@@ -30,6 +30,7 @@ var (
 type UserApi struct {
 }
 
+// AccountLogin
 // @Tags Base
 // @Summary 用户登录
 // @Produce  application/json
@@ -44,6 +45,7 @@ func (b *UserApi) AccountLogin(c *gin.Context) {
     response.OkWithMessage("修改成功", c)
 }
 
+// UserInfo
 // @Tags Base
 // @Summary 用户信息
 // @Produce  application/json
@@ -60,6 +62,7 @@ func (b *UserApi) UserInfo(c *gin.Context) {
     response.OkWithData(&wxmpRes.UserDataResponse{Id: info.ID, Avatar: info.Avatar, NickName: info.Nickname}, c)
 }
 
+// Logout
 // @Tags Base
 // @Summary 用户登出
 // @Produce  application/json
@@ -74,6 +77,7 @@ func (b *UserApi) Logout(c *gin.Context) {
     response.OkWithMessage("修改成功", c)
 }
 
+// GetWxMiniProgramSessionKey
 // @Tags Base
 // @Summary 获取用户session_key
 // @Produce  application/json
@@ -99,6 +103,7 @@ func (b *UserApi) GetWxMiniProgramSessionKey(c *gin.Context) {
     }, c)
 }
 
+// WXMiniProgramOauth
 // @Tags Base
 // @Summary 微信小程序登陆
 // @Produce  application/json
@@ -161,7 +166,8 @@ func (b *UserApi) WXMiniProgramOauth(c *gin.Context) {
     response.OkWithDetailed(&res, "登录成功", c)
 }
 
-// @Tags Base
+// UserData
+// @Tags UserData
 // @Summary 用户其他信息
 // @Produce  application/json
 // @Param data body wxmpReq.Login true "用户名, 密码, 验证码"
@@ -175,8 +181,6 @@ func (b *UserApi) UserData(c *gin.Context) {
         response.Fail(c)
         return
     }
-
-    global.Log.Sugar().Error(info)
 
     var res = wxmpRes.UserDataResponse{
         Id:       info.ID,
@@ -240,6 +244,7 @@ func (b *UserApi) tokenNext(c *gin.Context, id uint, user *weapp.UserInfo) (toke
     return token, nil
 }
 
+// WXPhoneNumberAuth
 // @Tags Base
 // @Summary 微信小程序手机号码授权
 // @Produce  application/json

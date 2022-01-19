@@ -52,7 +52,8 @@ func MysqlTables(db *gorm.DB) {
         wxmp.User{},
         wxmp.Dict{},
         wxmp.Activity{},
-        wxmp.ActivitySubscriber{},
+        wxmp.ActivityPeriodic{},
+        wxmp.ActivitySubscription{},
     )
     if err != nil {
         os.Exit(0)
@@ -273,15 +274,15 @@ func TestActivityService_CreateActivity(t *testing.T) {
 // 查询活动列表
 func TestActivityService_QueryActivities(t *testing.T) {
     Init()
-    list, _ := activityService.QueryActivities(1, "all")
-    t.Log(list)
+    //list, _ := activityService.QueryActivities(1, "all")
+    //t.Log(list)
 }
 
 // 查询活动详情
 func TestActivityService_QueryActivityDetail(t *testing.T) {
     Init()
-    a, _ := activityService.ActivityDetail(2)
-    t.Log(a)
+    //a, _ := activityService.ActivityDetail(2)
+    //t.Log(a)
 }
 
 func TestActivityService_SubscribeActivity(t *testing.T) {

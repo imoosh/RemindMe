@@ -8,7 +8,6 @@ import (
     wxmpReq "RemindMe/model/wxmp/request"
     wxmpRes "RemindMe/model/wxmp/response"
     "RemindMe/utils"
-    "fmt"
     "github.com/gin-gonic/gin"
     "go.uber.org/zap"
     "strconv"
@@ -64,8 +63,8 @@ func (api *ActivityApi) ActivityList(c *gin.Context) {
     }
 
     // 通过用户id获取所有相关的活动
-    typ := c.Query("type")
-    activities, err := activityService.QueryActivities(user.ID, typ)
+    acType, cursor := c.Query("type"), c.Query("cursor")
+    activities, nextCursor, err := activityService.QueryActivities(user.ID, acType, cursor)
     if err != nil {
         response.FailWithMessage("获取活动列表失败", c)
         return
@@ -73,17 +72,13 @@ func (api *ActivityApi) ActivityList(c *gin.Context) {
 
     var list = make([]wxmpRes.ActivityResponse, 0)
     for _, ac := range activities {
-        _date := ac.Time.Format("2006-01-02")
-        _time := ac.Time.Format("15:04")
-
         res := wxmpRes.ActivityResponse{
             Id:          ac.ID,
             SubId:       ac.SubId,
             Type:        ac.Type,
             Title:       ac.Title,
-            FullDate:    _date + string(' ') + _time + string(' ') + getWeekdayString(ac.NWeek),
-            Date:        _date,
-            Time:        _time,
+            TimeText:    ac.Time.Format("2006-01-02 15:04") + " " + getWeekdayString(ac.NWeek),
+            DateTime:    models.LocalTime{Time: ac.Time.Time},
             Lunar:       ac.Lunar,
             Periodic:    ac.Periodic,
             NWeek:       ac.NWeek,
@@ -122,21 +117,19 @@ func (api *ActivityApi) ActivityList(c *gin.Context) {
         }
         list = append(list, res)
     }
-
-    response.OkWithData(&list, c)
+    response.OkWithData(&wxmpRes.ActivitiesResponse{List: list, Cursor: nextCursor}, c)
 }
 
 func (api *ActivityApi) UpdateActivity(c *gin.Context) {
     var req wxmpReq.ActivityUpdateRequest
     _ = c.ShouldBindJSON(&req)
 
-    t, err := time.ParseInLocation("2006-01-02 15:04", req.Time, time.Local)
+    t, err := time.ParseInLocation(global.SecLocalTimeFormat, req.DateTime, time.Local)
     if err != nil {
         global.Log.Error("解析时间失败", zap.Any("err", err))
         response.FailWithMessage("更新活动失败", c)
         return
     }
-    fmt.Println(t.Format("2006-01-02 15:04"))
     var ac = wxmp.Activity{
         Type:      req.Type,
         Title:     req.Title,
@@ -159,6 +152,7 @@ func (api *ActivityApi) UpdateActivity(c *gin.Context) {
 
 func (api *ActivityApi) ActivityDetail(c *gin.Context) {
     activityId, err := strconv.Atoi(c.Query("id"))
+    subId, err := strconv.Atoi(c.Query("subId"))
     if err != nil {
         response.FailWithMessage("活动id不存在", c)
         return
@@ -170,21 +164,19 @@ func (api *ActivityApi) ActivityDetail(c *gin.Context) {
     }
 
     // 查询活动信息
-    ac, err := activityService.ActivityDetail(uint(activityId))
+    ac, err := activityService.ActivityDetail(uint(activityId), uint(subId))
     if err != nil {
         response.FailWithMessage("活动不存在", c)
         return
     }
 
-    _date := ac.Time.Format("2006-01-02")
-    _time := ac.Time.Format("15:04")
     res := wxmpRes.ActivityResponse{
         Id:          ac.ID,
+        SubId:       ac.SubId,
         Type:        ac.Type,
         Title:       ac.Title,
-        FullDate:    _date + string(' ') + _time + string(' ') + getWeekdayString(ac.NWeek),
-        Date:        _date,
-        Time:        _time,
+        TimeText:    ac.Time.Format("2006-01-02 15:04") + " " + getWeekdayString(ac.NWeek),
+        DateTime:    models.LocalTime{Time: ac.Time.Time},
         Lunar:       ac.Lunar,
         Periodic:    ac.Periodic,
         NWeek:       ac.NWeek,
