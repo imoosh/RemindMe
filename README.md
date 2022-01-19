@@ -1,54 +1,102 @@
-## server项目结构
+# wxcloudrun-golang
+[![GitHub license](https://img.shields.io/github/license/WeixinCloud/wxcloudrun-express)](https://github.com/WeixinCloud/wxcloudrun-express)
+![GitHub package.json dependency version (prod)](https://img.shields.io/badge/golang-1.17.1-green)
 
-```shell
-├── api
-│   └── v1
-├── config
-├── core
-├── docs
-├── global
-├── initialize
-│   └── internal
-├── middleware
-├── model
-│   ├── request
-│   └── response
-├── packfile
-├── resource
-│   ├── excel
-│   ├── page
-│   └── template
-├── router
-├── service
-├── source
-└── utils
-    ├── timer
-    └── upload
+微信云托管 golang 模版，实现简单的计数器读写接口，使用云托管 MySQL 读写、记录计数值。
+
+![](https://qcloudimg.tencent-cloud.cn/raw/be22992d297d1b9a1a5365e606276781.png)
+
+
+## 快速开始
+前往 [微信云托管快速开始页面](https://developers.weixin.qq.com/miniprogram/dev/wxcloudrun/src/basic/guide.html)，选择相应语言的模板，根据引导完成部署。
+
+
+## 目录结构说明
+~~~
+.
+├── Dockerfile                Dockerfile 文件
+├── LICENSE                   LICENSE 文件
+├── README.md                 README 文件
+├── container.config.json     微信云托管流水线配置
+├── db                        数据库逻辑目录
+├── go.mod                    go.mod 文件
+├── go.sum                    go.sum 文件
+├── index.html                主页 html 
+├── main.go                   主函数入口
+└── service                   接口服务逻辑目录
+~~~
+
+
+## 服务 API 文档
+
+### `GET /api/count`
+
+获取当前计数
+
+#### 请求参数
+
+无
+
+#### 响应结果
+
+- `code`：错误码
+- `data`：当前计数值
+
+##### 响应结果示例
+
+```json
+{
+  "code": 0,
+  "data": 42
+}
 ```
 
-| 文件夹       | 说明                    | 描述                        |
-| ------------ | ----------------------- | --------------------------- |
-| `api`        | api层                   | api层 |
-| `--v1`       | v1版本接口              | v1版本接口                  |
-| `config`     | 配置包                  | config.yaml对应的配置结构体 |
-| `core`       | 核心文件                | 核心组件(zap, viper, server)的初始化 |
-| `docs`       | swagger文档目录         | swagger文档目录 |
-| `global`     | 全局对象                | 全局对象 |
-| `initialize` | 初始化 | router,redis,gorm,validator, timer的初始化 |
-| `--internal` | 初始化内部函数 | gorm 的 longger 自定义,在此文件夹的函数只能由 `initialize` 层进行调用 |
-| `middleware` | 中间件层 | 用于存放 `gin` 中间件代码 |
-| `model`      | 模型层                  | 模型对应数据表              |
-| `--request`  | 入参结构体              | 接收前端发送到后端的数据。  |
-| `--response` | 出参结构体              | 返回给前端的数据结构体      |
-| `packfile`   | 静态文件打包            | 静态文件打包 |
-| `resource`   | 静态资源文件夹          | 负责存放静态文件                |
-| `--excel` | excel导入导出默认路径 | excel导入导出默认路径 |
-| `--page` | 表单生成器 | 表单生成器 打包后的dist |
-| `--template` | 模板 | 模板文件夹,存放的是代码生成器的模板 |
-| `router`     | 路由层                  | 路由层 |
-| `service`    | service层               | 存放业务逻辑问题 |
-| `source` | source层 | 存放初始化数据的函数 |
-| `utils`      | 工具包                  | 工具函数封装            |
-| `--timer` | timer | 定时器接口封装 |
-| `--upload`      | oss                  | oss接口封装        |
+#### 调用示例
 
+```
+curl https://<云托管服务域名>/api/count
+```
+
+
+
+### `POST /api/count`
+
+更新计数，自增或者清零
+
+#### 请求参数
+
+- `action`：`string` 类型，枚举值
+  - 等于 `"inc"` 时，表示计数加一
+  - 等于 `"clear"` 时，表示计数重置（清零）
+
+##### 请求参数示例
+
+```
+{
+  "action": "inc"
+}
+```
+
+#### 响应结果
+
+- `code`：错误码
+- `data`：当前计数值
+
+##### 响应结果示例
+
+```json
+{
+  "code": 0,
+  "data": 42
+}
+```
+
+#### 调用示例
+
+```
+curl -X POST -H 'content-type: application/json' -d '{"action": "inc"}' https://<云托管服务域名>/api/count
+```
+
+## License
+
+[MIT](./LICENSE)
