@@ -116,6 +116,7 @@ func WxmpRouters() *gin.Engine {
 	}
 	{
 		wxmpRouter.InitBaseRouter(PublicGroup)
+		wxmpRouter.InitPlatformRouter(PublicGroup)
 	}
 
 	PrivateGroup := Router.Group("")
